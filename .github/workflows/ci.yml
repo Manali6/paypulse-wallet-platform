@@ -138,7 +138,15 @@ jobs:
       - name: Deploy to Railway
         if: steps.check-token.outputs.skip == 'false'
         continue-on-error: true
-        run: cd backend && railway up --detach || echo "Railway deployment skipped due to invalid token or missing project link"
+        env:
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
+        run: |
+          cd backend
+          if [ -n "$RAILWAY_SERVICE" ]; then
+            railway up --service "$RAILWAY_SERVICE" --detach
+          else
+            railway up --detach
+          fi
 
   deploy-frontend:
     name: Deploy Frontend (Vercel)
