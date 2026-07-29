@@ -71,7 +71,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: cd backend && pip install -r requirements.txt
+        run: cd backend && pip install -r requirements.txt && pip install pytest-cov
       - name: Run migrations
         run: cd backend && alembic upgrade head
       - name: Run tests with coverage
