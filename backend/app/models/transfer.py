@@ -1,11 +1,11 @@
-import uuid
 import enum
+import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from sqlalchemy import String, DateTime, Numeric, ForeignKey, Enum, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -37,9 +37,14 @@ class Transfer(Base):
     received_amount: Mapped[Decimal] = mapped_column(Numeric(18, 6), nullable=False)
     source_currency: Mapped[str] = mapped_column(String(3), nullable=False)
     target_currency: Mapped[str] = mapped_column(String(3), nullable=False)
-    exchange_rate: Mapped[Decimal] = mapped_column(Numeric(18, 8), nullable=False, default=Decimal("1.00000000"))
+    exchange_rate: Mapped[Decimal] = mapped_column(
+        Numeric(18, 8), nullable=False, default=Decimal("1.00000000")
+    )
     status: Mapped[TransferStatus] = mapped_column(
-        Enum(TransferStatus), nullable=False, default=TransferStatus.COMPLETED, index=True
+        Enum(TransferStatus),
+        nullable=False,
+        default=TransferStatus.COMPLETED,
+        index=True,
     )
     idempotency_key: Mapped[str] = mapped_column(
         String(255), unique=True, index=True, nullable=False

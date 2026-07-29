@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.exceptions import WalletPlatformError
 from app.schemas.transfer import TransferRequest, TransferResponse
 from app.services import transfer_service
-from app.exceptions import WalletPlatformError
 
 router = APIRouter(prefix="/transfers", tags=["Transfers"])
 

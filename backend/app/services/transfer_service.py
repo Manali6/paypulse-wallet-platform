@@ -4,18 +4,17 @@ from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy.orm import Session
-from sqlalchemy import select
 
-from app.models.wallet import Wallet
-from app.models.user import User
-from app.models.transaction import Transaction, TransactionType
-from app.models.transfer import Transfer, TransferStatus
 from app.exceptions import (
     InsufficientFundsError,
-    WalletNotFoundError,
     UserNotFoundError,
+    WalletNotFoundError,
     WalletPlatformError,
 )
+from app.models.transaction import Transaction, TransactionType
+from app.models.transfer import Transfer, TransferStatus
+from app.models.user import User
+from app.models.wallet import Wallet
 
 # Base conversion rates relative to USD for Flow 2 cross-currency transfers
 BASE_RATES_TO_USD: dict[str, Decimal] = {
@@ -71,16 +70,18 @@ def create_transfer(
         return existing_transfer
 
     # 3. Lookup Recipient User (case-insensitive)
-    recipient = (
-        db.query(User).filter(User.email.ilike(recipient_email)).first()
-    )
+    recipient = db.query(User).filter(User.email.ilike(recipient_email)).first()
     if not recipient:
         raise UserNotFoundError(recipient_email)
 
     # 4. Find Sender & Receiver Wallets
     sender_wallet = (
         db.query(Wallet)
-        .filter(Wallet.user_id == sender_user.id, Wallet.currency == currency, Wallet.is_active.is_(True))
+        .filter(
+            Wallet.user_id == sender_user.id,
+            Wallet.currency == currency,
+            Wallet.is_active.is_(True),
+        )
         .first()
     )
     if not sender_wallet:
@@ -89,13 +90,21 @@ def create_transfer(
     # Find recipient wallet in requested currency, fallback to recipient's default currency wallet
     receiver_wallet = (
         db.query(Wallet)
-        .filter(Wallet.user_id == recipient.id, Wallet.currency == currency, Wallet.is_active.is_(True))
+        .filter(
+            Wallet.user_id == recipient.id,
+            Wallet.currency == currency,
+            Wallet.is_active.is_(True),
+        )
         .first()
     )
     if not receiver_wallet:
         receiver_wallet = (
             db.query(Wallet)
-            .filter(Wallet.user_id == recipient.id, Wallet.currency == recipient.default_currency, Wallet.is_active.is_(True))
+            .filter(
+                Wallet.user_id == recipient.id,
+                Wallet.currency == recipient.default_currency,
+                Wallet.is_active.is_(True),
+            )
             .first()
         )
 
@@ -105,7 +114,9 @@ def create_transfer(
     # 5. Pessimistic Locking: Lock both wallets using SELECT FOR UPDATE
     # Order wallet IDs lexicographically to prevent deadlocks when concurrent inverse transfers occur
     first_id, second_id = sorted([sender_wallet.id, receiver_wallet.id])
-    db.query(Wallet).filter(Wallet.id.in_([first_id, second_id])).with_for_update().all()
+    db.query(Wallet).filter(
+        Wallet.id.in_([first_id, second_id])
+    ).with_for_update().all()
 
     # Refresh in-memory wallet states after acquiring lock
     db.refresh(sender_wallet)
@@ -120,7 +131,9 @@ def create_transfer(
         )
 
     # 7. Calculate Received Amount
-    exchange_rate = calculate_exchange_rate(sender_wallet.currency, receiver_wallet.currency)
+    exchange_rate = calculate_exchange_rate(
+        sender_wallet.currency, receiver_wallet.currency
+    )
     received_amount = (sent_amount * exchange_rate).quantize(Decimal("0.000001"))
 
     # 8. Update Balances

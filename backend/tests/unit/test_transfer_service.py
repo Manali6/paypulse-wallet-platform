@@ -1,8 +1,8 @@
 """Unit tests for transfer_service — same-currency, cross-currency, idempotency, and balance checks."""
 
 from decimal import Decimal
-from uuid import uuid4
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 import pytest
 
@@ -42,7 +42,7 @@ class TestCreateTransferValidation:
                 db=db,
                 sender_user=sender,
                 recipient_email="sender@example.com",
-                sent_amount=Decimal("100"),
+                sent_amount=Decimal(100),
                 currency="USD",
                 idempotency_key="key-1234567890",
             )
@@ -64,7 +64,7 @@ class TestCreateTransferValidation:
                 db=db,
                 sender_user=sender,
                 recipient_email="nobody@example.com",
-                sent_amount=Decimal("100"),
+                sent_amount=Decimal(100),
                 currency="USD",
                 idempotency_key="key-1234567890",
             )
@@ -91,7 +91,7 @@ class TestCreateTransferValidation:
                 db=db,
                 sender_user=sender,
                 recipient_email="recipient@example.com",
-                sent_amount=Decimal("100"),
+                sent_amount=Decimal(100),
                 currency="USD",
                 idempotency_key="key-1234567890",
             )
@@ -135,7 +135,7 @@ class TestCreateTransferValidation:
                 db=db,
                 sender_user=sender,
                 recipient_email="recipient@example.com",
-                sent_amount=Decimal("100"),
+                sent_amount=Decimal(100),
                 currency="USD",
                 idempotency_key="key-1234567890",
             )
