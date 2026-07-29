@@ -64,8 +64,10 @@ def fetch_external_fx_rates(base_currency: str = "USD") -> dict[str, Decimal]:
                         Decimal("0.00000001")
                     )
                 return rates
-    except Exception:
-        return DEFAULT_USD_RATES
+    except Exception:  # noqa: S110
+        pass
+
+    return DEFAULT_USD_RATES
 
 
 def refresh_exchange_rates_job():
@@ -75,11 +77,14 @@ def refresh_exchange_rates_job():
         rates = fetch_external_fx_rates("USD")
         now = datetime.now(timezone.utc)
 
-        # 1. Update Redis Cache
-        cache_data = {curr: str(rate) for curr, rate in rates.items()}
-        redis_client.setex(
-            f"{CACHE_KEY_FX_PREFIX}USD", CACHE_TTL_SECONDS, json.dumps(cache_data)
-        )
+        # 1. Update Redis Cache (if available)
+        try:
+            cache_data = {curr: str(rate) for curr, rate in rates.items()}
+            redis_client.setex(
+                f"{CACHE_KEY_FX_PREFIX}USD", CACHE_TTL_SECONDS, json.dumps(cache_data)
+            )
+        except Exception:  # noqa: S110
+            pass
 
         # 2. Persist/Update DB ExchangeRate records
         for target_curr, rate_val in rates.items():
@@ -124,16 +129,23 @@ def get_current_exchange_rates(
     base_currency = base_currency.upper()
     cache_key = f"{CACHE_KEY_FX_PREFIX}{base_currency}"
 
-    # Try Redis
-    cached = redis_client.get(cache_key)
-    if cached:
-        raw_rates = json.loads(cached)
-        return {k: Decimal(v) for k, v in raw_rates.items()}, "redis_cache"
+    # Try Redis Cache
+    try:
+        cached = redis_client.get(cache_key)
+        if cached:
+            raw_rates = json.loads(cached)
+            return {k: Decimal(v) for k, v in raw_rates.items()}, "redis_cache"
+    except Exception:  # noqa: S110
+        pass
 
     # Fallback to DB or fresh API fetch
-    rates = fetch_external_fx_rates(base_currency)
-    cache_data = {k: str(v) for k, v in rates.items()}
-    redis_client.setex(cache_key, CACHE_TTL_SECONDS, json.dumps(cache_data))
+    rates = fetch_external_fx_rates(base_currency) or DEFAULT_USD_RATES
+    try:
+        cache_data = {k: str(v) for k, v in rates.items()}
+        redis_client.setex(cache_key, CACHE_TTL_SECONDS, json.dumps(cache_data))
+    except Exception:  # noqa: S110
+        pass
+
     return rates, "live_api"
 
 
