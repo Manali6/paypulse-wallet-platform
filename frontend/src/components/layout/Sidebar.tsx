@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, Wallet, Send, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
 export const Sidebar: React.FC = () => {
@@ -101,6 +101,24 @@ export const Sidebar: React.FC = () => {
           >
             <Wallet size={18} />
             Wallets
+          </NavLink>
+
+          <NavLink
+            to="/transfers"
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '10px 14px',
+              borderRadius: 'var(--radius-sm)',
+              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
+              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
+            <Send size={18} />
+            Transfers
           </NavLink>
         </nav>
       </div>

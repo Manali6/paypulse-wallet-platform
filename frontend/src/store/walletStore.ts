@@ -21,9 +21,32 @@ export interface Transaction {
   created_at: string;
 }
 
+export interface Transfer {
+  id: string;
+  sender_wallet_id: string;
+  receiver_wallet_id: string;
+  sent_amount: string;
+  received_amount: string;
+  source_currency: string;
+  target_currency: string;
+  exchange_rate: string;
+  status: string;
+  idempotency_key: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface UserSearchResult {
+  id: string;
+  email: string;
+  display_name: string;
+  default_currency: string;
+}
+
 interface WalletState {
   wallets: Wallet[];
   transactions: Transaction[];
+  transfers: Transfer[];
   totalTransactions: number;
   isLoading: boolean;
 
@@ -32,11 +55,20 @@ interface WalletState {
   creditWallet: (walletId: string, amount: string, description?: string) => Promise<void>;
   debitWallet: (walletId: string, amount: string, description?: string) => Promise<void>;
   fetchTransactions: (params?: { wallet_id?: string; page?: number; page_size?: number }) => Promise<void>;
+  fetchTransfers: () => Promise<void>;
+  initiateTransfer: (data: {
+    recipient_email: string;
+    amount: string;
+    currency: string;
+    idempotency_key: string;
+    description?: string;
+  }) => Promise<Transfer>;
 }
 
-export const useWalletStore = create<WalletState>((set) => ({
+export const useWalletStore = create<WalletState>((set, get) => ({
   wallets: [],
   transactions: [],
+  transfers: [],
   totalTransactions: 0,
   isLoading: false,
 
@@ -57,7 +89,6 @@ export const useWalletStore = create<WalletState>((set) => ({
 
   creditWallet: async (walletId, amount, description) => {
     await api.post(`/wallets/${walletId}/credit`, { amount, description });
-    // Refresh wallets to get updated balance
     const response = await api.get('/wallets');
     set({ wallets: response.data });
   },
@@ -80,5 +111,23 @@ export const useWalletStore = create<WalletState>((set) => ({
     } catch {
       set({ isLoading: false });
     }
+  },
+
+  fetchTransfers: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get('/transfers');
+      set({ transfers: response.data, isLoading: false });
+    } catch {
+      set({ isLoading: false });
+    }
+  },
+
+  initiateTransfer: async (data) => {
+    const response = await api.post('/transfers', data);
+    // Refresh wallets & transfers
+    get().fetchWallets();
+    get().fetchTransfers();
+    return response.data;
   },
 }));
