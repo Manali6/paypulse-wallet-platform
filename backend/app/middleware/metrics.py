@@ -2,7 +2,6 @@
 
 from prometheus_client import Counter, Histogram
 
-
 # HTTP error counter — tracks 4xx/5xx responses by status code, path, and method.
 # This is the primary metric for detecting increased error rates.
 http_errors_total = Counter(

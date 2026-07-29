@@ -1,15 +1,11 @@
 """Unit tests for auth_service — password hashing and JWT token management."""
 
-import pytest
-from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
-
 from app.services.auth_service import (
-    hash_password,
-    verify_password,
     create_access_token,
     create_refresh_token,
+    hash_password,
     verify_access_token,
+    verify_password,
     verify_refresh_token,
 )
 

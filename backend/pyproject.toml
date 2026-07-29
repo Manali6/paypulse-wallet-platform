@@ -4,3 +4,7 @@ asyncio_mode = "auto"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.ruff.lint]
+ignore = ["B008", "BLE001"]
+

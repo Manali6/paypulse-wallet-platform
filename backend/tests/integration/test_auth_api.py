@@ -97,9 +97,7 @@ class TestRefresh:
         refresh_token = signup_resp.json()["refresh_token"]
 
         # Use refresh token
-        response = client.post(
-            "/auth/refresh", json={"refresh_token": refresh_token}
-        )
+        response = client.post("/auth/refresh", json={"refresh_token": refresh_token})
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data

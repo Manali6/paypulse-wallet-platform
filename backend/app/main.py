@@ -1,13 +1,10 @@
 """Wallet Platform — FastAPI Application Factory."""
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.config import get_settings
-from app.routers import auth, wallets, transactions, health
-from app.middleware.metrics import http_errors_total
-from app.exceptions import WalletPlatformError
+from app.routers import auth, health, transactions, wallets
 
 settings = get_settings()
 

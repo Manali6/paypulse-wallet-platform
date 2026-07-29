@@ -1,9 +1,12 @@
 from decimal import Decimal
+
 from pydantic import BaseModel, Field
 
 
 class WalletCreate(BaseModel):
-    currency: str = Field(..., pattern=r"^[A-Z]{3}$", description="ISO 4217 currency code")
+    currency: str = Field(
+        ..., pattern=r"^[A-Z]{3}$", description="ISO 4217 currency code"
+    )
 
 
 class WalletResponse(BaseModel):

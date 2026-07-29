@@ -3,25 +3,33 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.currencies import is_valid_currency
 from app.database import get_db
-from app.schemas.auth import SignupRequest, LoginRequest, RefreshRequest, TokenResponse, UserResponse
+from app.dependencies import get_current_user
+from app.models.user import User
+from app.repositories import user_repo
+from app.schemas.auth import (
+    LoginRequest,
+    RefreshRequest,
+    SignupRequest,
+    TokenResponse,
+    UserResponse,
+)
 from app.services.auth_service import (
-    hash_password,
-    verify_password,
     create_access_token,
     create_refresh_token,
+    hash_password,
+    verify_password,
     verify_refresh_token,
 )
 from app.services.wallet_service import create_wallet
-from app.repositories import user_repo
-from app.models.user import User
-from app.currencies import is_valid_currency
-from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED
+)
 def signup(request: SignupRequest, db: Session = Depends(get_db)):
     """Register a new user and create their default wallet."""
 
@@ -95,6 +103,7 @@ def refresh(request: RefreshRequest, db: Session = Depends(get_db)):
 
     # Verify user still exists
     from uuid import UUID
+
     user = user_repo.get_by_id(db, UUID(user_id))
     if not user:
         raise HTTPException(

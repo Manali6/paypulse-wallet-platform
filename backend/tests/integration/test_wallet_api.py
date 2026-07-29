@@ -149,18 +149,14 @@ class TestTransactions:
             )
 
         # Page 1, size 2
-        response = client.get(
-            "/transactions?page=1&page_size=2", headers=auth_headers
-        )
+        response = client.get("/transactions?page=1&page_size=2", headers=auth_headers)
         data = response.json()
         assert len(data["transactions"]) == 2
         assert data["total"] == 3
         assert data["has_next"] is True
 
         # Page 2, size 2
-        response = client.get(
-            "/transactions?page=2&page_size=2", headers=auth_headers
-        )
+        response = client.get("/transactions?page=2&page_size=2", headers=auth_headers)
         data = response.json()
         assert len(data["transactions"]) == 1
         assert data["has_next"] is False

@@ -1,5 +1,6 @@
-from pydantic_settings import BaseSettings
 from functools import lru_cache
+
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -19,7 +20,9 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
 
     # CORS
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,http://localhost:3002"
+    CORS_ORIGINS: str = (
+        "http://localhost:5173,http://localhost:3000,http://localhost:3002"
+    )
 
     # App
     ENVIRONMENT: str = "development"
@@ -40,6 +43,6 @@ class Settings(BaseSettings):
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     return Settings()

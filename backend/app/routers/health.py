@@ -3,8 +3,8 @@
 from fastapi import APIRouter
 from sqlalchemy import text
 
-from app.database import SessionLocal
 from app.config import get_settings
+from app.database import SessionLocal
 
 router = APIRouter(tags=["Health"])
 settings = get_settings()
@@ -29,6 +29,7 @@ def health_check():
     # Check Redis
     try:
         import redis
+
         r = redis.from_url(settings.REDIS_URL)
         r.ping()
         checks["redis"] = {"status": "healthy"}

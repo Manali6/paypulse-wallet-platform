@@ -7,9 +7,14 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.wallet import WalletCreate, WalletResponse, CreditDebitRequest, CreditDebitResponse
-from app.services import wallet_service
 from app.exceptions import WalletPlatformError
+from app.schemas.wallet import (
+    CreditDebitRequest,
+    CreditDebitResponse,
+    WalletCreate,
+    WalletResponse,
+)
+from app.services import wallet_service
 
 router = APIRouter(prefix="/wallets", tags=["Wallets"])
 

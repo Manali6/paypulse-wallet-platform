@@ -1,19 +1,20 @@
 """Unit tests for wallet_service — wallet creation, credit, and debit logic."""
 
-import pytest
 from decimal import Decimal
+from unittest.mock import MagicMock
 from uuid import uuid4
-from unittest.mock import MagicMock, patch
 
-from app.services.wallet_service import create_wallet, credit_wallet, debit_wallet
-from app.models.wallet import Wallet
-from app.models.transaction import Transaction, TransactionType
+import pytest
+
 from app.exceptions import (
-    InsufficientFundsError,
     DuplicateWalletError,
+    InsufficientFundsError,
     InvalidCurrencyError,
     WalletNotFoundError,
 )
+from app.models.transaction import Transaction
+from app.models.wallet import Wallet
+from app.services.wallet_service import create_wallet, credit_wallet, debit_wallet
 
 
 @pytest.fixture
@@ -48,11 +49,12 @@ class TestCreateWallet:
             obj.balance = Decimal("0.000000")
             obj.is_active = True
             from datetime import datetime, timezone
+
             obj.created_at = datetime.now(timezone.utc)
 
         mock_db.refresh.side_effect = refresh_side_effect
 
-        wallet = create_wallet(mock_db, uuid4(), "USD")
+        create_wallet(mock_db, uuid4(), "USD")
         mock_db.add.assert_called_once()
         mock_db.commit.assert_called_once()
 
@@ -64,7 +66,7 @@ class TestCreditWallet:
         # Wallet query returns None
         mock_db.query.return_value.filter.return_value.first.return_value = None
         with pytest.raises(WalletNotFoundError):
-            credit_wallet(mock_db, uuid4(), uuid4(), Decimal("100"))
+            credit_wallet(mock_db, uuid4(), uuid4(), Decimal(100))
 
     def test_credit_wallet_success(self, mock_db):
         wallet = Wallet()
@@ -79,11 +81,12 @@ class TestCreditWallet:
             if isinstance(obj, Transaction):
                 obj.id = uuid4()
                 from datetime import datetime, timezone
+
                 obj.created_at = datetime.now(timezone.utc)
 
         mock_db.refresh.side_effect = refresh_side_effect
 
-        tx = credit_wallet(mock_db, wallet.id, uuid4(), Decimal("100"))
+        credit_wallet(mock_db, wallet.id, uuid4(), Decimal(100))
         assert wallet.balance == Decimal("150.000000")
         mock_db.add.assert_called_once()
         mock_db.commit.assert_called_once()
@@ -102,7 +105,7 @@ class TestDebitWallet:
         mock_db.query.return_value.filter.return_value.first.return_value = wallet
 
         with pytest.raises(InsufficientFundsError):
-            debit_wallet(mock_db, wallet.id, uuid4(), Decimal("100"))
+            debit_wallet(mock_db, wallet.id, uuid4(), Decimal(100))
 
     def test_debit_wallet_exact_balance(self, mock_db):
         wallet = Wallet()
@@ -117,14 +120,15 @@ class TestDebitWallet:
             if isinstance(obj, Transaction):
                 obj.id = uuid4()
                 from datetime import datetime, timezone
+
                 obj.created_at = datetime.now(timezone.utc)
 
         mock_db.refresh.side_effect = refresh_side_effect
 
-        tx = debit_wallet(mock_db, wallet.id, uuid4(), Decimal("100"))
+        debit_wallet(mock_db, wallet.id, uuid4(), Decimal(100))
         assert wallet.balance == Decimal("0.000000")
 
     def test_debit_wallet_not_found(self, mock_db):
         mock_db.query.return_value.filter.return_value.first.return_value = None
         with pytest.raises(WalletNotFoundError):
-            debit_wallet(mock_db, uuid4(), uuid4(), Decimal("50"))
+            debit_wallet(mock_db, uuid4(), uuid4(), Decimal(50))

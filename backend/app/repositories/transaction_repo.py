@@ -1,10 +1,9 @@
 """Transaction repository — database queries for transaction history."""
 
-from uuid import UUID
 from typing import NamedTuple
+from uuid import UUID
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 
 from app.models.transaction import Transaction, TransactionType
 from app.models.wallet import Wallet

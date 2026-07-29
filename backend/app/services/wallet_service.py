@@ -5,15 +5,15 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from app.models.wallet import Wallet
-from app.models.transaction import Transaction, TransactionType
 from app.currencies import is_valid_currency
 from app.exceptions import (
-    InsufficientFundsError,
     DuplicateWalletError,
+    InsufficientFundsError,
     InvalidCurrencyError,
     WalletNotFoundError,
 )
+from app.models.transaction import Transaction, TransactionType
+from app.models.wallet import Wallet
 
 
 def create_wallet(db: Session, user_id: UUID, currency: str) -> Wallet:
@@ -71,7 +71,11 @@ def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID) -> Wallet:
 
 
 def credit_wallet(
-    db: Session, wallet_id: UUID, user_id: UUID, amount: Decimal, description: str | None = None
+    db: Session,
+    wallet_id: UUID,
+    user_id: UUID,
+    amount: Decimal,
+    description: str | None = None,
 ) -> Transaction:
     """Credit (add funds to) a wallet. Returns the created transaction."""
     wallet = get_wallet_by_id(db, wallet_id, user_id)
@@ -94,7 +98,11 @@ def credit_wallet(
 
 
 def debit_wallet(
-    db: Session, wallet_id: UUID, user_id: UUID, amount: Decimal, description: str | None = None
+    db: Session,
+    wallet_id: UUID,
+    user_id: UUID,
+    amount: Decimal,
+    description: str | None = None,
 ) -> Transaction:
     """Debit (withdraw funds from) a wallet. Checks for sufficient balance."""
     wallet = get_wallet_by_id(db, wallet_id, user_id)
