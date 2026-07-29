@@ -48,7 +48,7 @@ def get_user_wallets(db: Session, user_id: UUID) -> list[Wallet]:
     """Get all wallets for a user."""
     return (
         db.query(Wallet)
-        .filter(Wallet.user_id == user_id, Wallet.is_active == True)
+        .filter(Wallet.user_id == user_id, Wallet.is_active)
         .order_by(Wallet.created_at)
         .all()
     )
@@ -61,7 +61,7 @@ def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID) -> Wallet:
         .filter(
             Wallet.id == wallet_id,
             Wallet.user_id == user_id,
-            Wallet.is_active == True,
+            Wallet.is_active,
         )
         .first()
     )
