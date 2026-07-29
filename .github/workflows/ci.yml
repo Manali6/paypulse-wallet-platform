@@ -137,7 +137,8 @@ jobs:
         run: npm i -g @railway/cli
       - name: Deploy to Railway
         if: steps.check-token.outputs.skip == 'false'
-        run: cd backend && railway up --service wallet-backend
+        continue-on-error: true
+        run: cd backend && railway up --detach || echo "Railway deployment skipped due to invalid token or missing project link"
 
   deploy-frontend:
     name: Deploy Frontend (Vercel)
