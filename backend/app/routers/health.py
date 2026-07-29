@@ -1,7 +1,7 @@
 """Health check router — liveness and readiness checks for database, Redis, and migrations."""
 
-from fastapi import APIRouter
 import redis
+from fastapi import APIRouter
 from sqlalchemy import text
 
 from app.config import get_settings
@@ -22,7 +22,9 @@ def health_check():
         db = SessionLocal()
         db.execute(text("SELECT 1"))
         # Get latest applied migration version
-        alembic_ver = db.execute(text("SELECT version_num FROM alembic_version")).scalar()
+        alembic_ver = db.execute(
+            text("SELECT version_num FROM alembic_version")
+        ).scalar()
         db.close()
         checks["database"] = {
             "status": "healthy",
