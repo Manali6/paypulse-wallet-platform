@@ -139,13 +139,15 @@ jobs:
         if: steps.check-token.outputs.skip == 'false'
         continue-on-error: true
         env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
         run: |
           cd backend
+          export RAILWAY_TOKEN="${{ secrets.RAILWAY_TOKEN }}"
           if [ -n "$RAILWAY_SERVICE" ]; then
-            railway up --service "$RAILWAY_SERVICE" --detach
+            npx @railway/cli up --service "$RAILWAY_SERVICE" --detach
           else
-            railway up --detach
+            npx @railway/cli up --detach
           fi
 
   deploy-frontend:
