@@ -36,6 +36,19 @@ export interface Transfer {
   created_at: string;
 }
 
+export interface ConversionRecord {
+  id: string;
+  from_wallet_id: string;
+  to_wallet_id: string;
+  from_amount: string;
+  to_amount: string;
+  from_currency: string;
+  to_currency: string;
+  rate_applied: string;
+  idempotency_key: string;
+  created_at: string;
+}
+
 export interface UserSearchResult {
   id: string;
   email: string;
@@ -47,6 +60,8 @@ interface WalletState {
   wallets: Wallet[];
   transactions: Transaction[];
   transfers: Transfer[];
+  conversions: ConversionRecord[];
+  rates: Record<string, string>;
   totalTransactions: number;
   isLoading: boolean;
 
@@ -63,12 +78,22 @@ interface WalletState {
     idempotency_key: string;
     description?: string;
   }) => Promise<Transfer>;
+  fetchRates: (base?: string) => Promise<void>;
+  fetchConversions: () => Promise<void>;
+  convertCurrency: (data: {
+    from_currency: string;
+    to_currency: string;
+    amount: string;
+    idempotency_key: string;
+  }) => Promise<ConversionRecord>;
 }
 
 export const useWalletStore = create<WalletState>((set, get) => ({
   wallets: [],
   transactions: [],
   transfers: [],
+  conversions: [],
+  rates: {},
   totalTransactions: 0,
   isLoading: false,
 
@@ -125,9 +150,34 @@ export const useWalletStore = create<WalletState>((set, get) => ({
 
   initiateTransfer: async (data) => {
     const response = await api.post('/transfers', data);
-    // Refresh wallets & transfers
     get().fetchWallets();
     get().fetchTransfers();
+    return response.data;
+  },
+
+  fetchRates: async (base = 'USD') => {
+    try {
+      const response = await api.get(`/fx/rates?base=${base}`);
+      set({ rates: response.data.rates });
+    } catch {
+      // Keep existing rates on error
+    }
+  },
+
+  fetchConversions: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get('/fx/conversions');
+      set({ conversions: response.data, isLoading: false });
+    } catch {
+      set({ isLoading: false });
+    }
+  },
+
+  convertCurrency: async (data) => {
+    const response = await api.post('/fx/convert', data);
+    get().fetchWallets();
+    get().fetchConversions();
     return response.data;
   },
 }));

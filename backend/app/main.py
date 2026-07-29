@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import auth, health, transactions, transfers, users, wallets
+from app.routers import auth, fx, health, transactions, transfers, users, wallets
 
 settings = get_settings()
 
@@ -25,6 +25,7 @@ def create_app() -> FastAPI:
     application.include_router(users.router)
     application.include_router(wallets.router)
     application.include_router(transfers.router)
+    application.include_router(fx.router)
     application.include_router(transactions.router)
 
     # ── CORS (Added last so it's the outermost middleware) ──

@@ -6,6 +6,7 @@ import { Signup } from './pages/Signup';
 import { Dashboard } from './pages/Dashboard';
 import { Wallets } from './pages/Wallets';
 import { Transfers } from './pages/Transfers';
+import { Exchange } from './pages/Exchange';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
 export const App: React.FC = () => {
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/wallets" element={<Wallets />} />
           <Route path="/transfers" element={<Transfers />} />
+          <Route path="/exchange" element={<Exchange />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
