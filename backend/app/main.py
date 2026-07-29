@@ -1,9 +1,12 @@
-"""Wallet Platform — FastAPI Application Factory."""
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.config import get_settings
+from app.limiter import limiter
+from app.metrics import HTTP_ERRORS_TOTAL
 from app.routers import auth, fx, health, transactions, transfers, users, wallets
 
 settings = get_settings()
@@ -18,6 +21,24 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
     )
+
+    application.state.limiter = limiter
+    application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    # ── Middleware for Tracking 4xx/5xx Errors in Prometheus ──
+    @application.middleware("http")
+    async def track_error_metrics(request: Request, call_next):
+        response = await call_next(request)
+        if response.status_code >= 400:
+            HTTP_ERRORS_TOTAL.labels(
+                status_code=str(response.status_code),
+                method=request.method,
+                path=request.url.path,
+            ).inc()
+        return response
+
+    # ── Prometheus Instrumentator ─────────────────────────
+    Instrumentator().instrument(application).expose(application, endpoint="/metrics")
 
     # ── Routers ───────────────────────────────────────────
     application.include_router(health.router)

@@ -65,9 +65,7 @@ def fetch_external_fx_rates(base_currency: str = "USD") -> dict[str, Decimal]:
                     )
                 return rates
     except Exception:
-        pass
-
-    return DEFAULT_USD_RATES
+        return DEFAULT_USD_RATES
 
 
 def refresh_exchange_rates_job():
