@@ -46,7 +46,8 @@ def signup(request: SignupRequest, db: Session = Depends(get_db)):
     existing = user_repo.get_by_email(db, request.email)
     if existing:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Email already registered",
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already registered",
         )
 
     # Create user
@@ -65,7 +66,10 @@ def signup(request: SignupRequest, db: Session = Depends(get_db)):
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
 
-    return TokenResponse(access_token=access_token, refresh_token=refresh_token,)
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+    )
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -82,7 +86,10 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
 
-    return TokenResponse(access_token=access_token, refresh_token=refresh_token,)
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+    )
 
 
 @router.post("/refresh", response_model=TokenResponse)
@@ -102,13 +109,17 @@ def refresh(request: RefreshRequest, db: Session = Depends(get_db)):
     user = user_repo.get_by_id(db, UUID(user_id))
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
         )
 
     access_token = create_access_token(user_id)
     new_refresh_token = create_refresh_token(user_id)
 
-    return TokenResponse(access_token=access_token, refresh_token=new_refresh_token,)
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=new_refresh_token,
+    )
 
 
 @router.get("/me", response_model=UserResponse)
@@ -172,7 +183,8 @@ async def upload_profile_photo(
     """Upload a profile photo."""
     if not file.content_type.startswith("image/"):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="File must be an image",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File must be an image",
         )
 
     # In production this would go to S3. Here we save locally to uploads/avatars/
