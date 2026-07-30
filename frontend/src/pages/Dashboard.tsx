@@ -25,7 +25,7 @@ export const Dashboard: React.FC = () => {
         {wallets.map((wallet) => (
           <div key={wallet.id} className="glass-card" style={{ padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>{wallet.currency} Wallet</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600 }}>{wallet.currency} Wallet</span>
               <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--bg-glass)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <WalletIcon size={16} color="var(--accent-primary)" />
               </div>

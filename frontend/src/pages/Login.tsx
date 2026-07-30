@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { handleApiError } from '../lib/api';
 import { Alert } from '../components/ui/Alert';
+import { Activity } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -37,8 +38,16 @@ export const Login: React.FC = () => {
       }}
     >
       <div className="glass-card" style={{ width: '100%', maxWidth: '400px', padding: '32px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '8px' }}>Welcome Back</h1>
+        <div style={{ textAlign: 'center', marginBottom: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(6, 182, 212, 0.4)' }}>
+              <Activity color="white" size={24} />
+            </div>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--accent-primary)', letterSpacing: '-0.5px' }}>
+              PayPulse
+            </h2>
+          </div>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>Welcome Back</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
             Sign in to access your multi-currency wallets
           </p>

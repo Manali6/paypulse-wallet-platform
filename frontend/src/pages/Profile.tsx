@@ -49,7 +49,7 @@ export const Profile: React.FC = () => {
         <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Manage your profile details and preferences</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
         {/* Avatar Card */}
         <div className="glass-card" style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
