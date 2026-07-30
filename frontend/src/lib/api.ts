@@ -62,4 +62,14 @@ api.interceptors.response.use(
   }
 );
 
+export const handleApiError = (err: any, defaultMessage: string): string => {
+  if (!err) return defaultMessage;
+  const detail = err.response?.data?.detail;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail) && detail.length > 0 && detail[0].msg) {
+    return detail[0].msg;
+  }
+  return err.message || defaultMessage;
+};
+
 export default api;

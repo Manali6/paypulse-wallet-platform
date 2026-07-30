@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.currencies import is_valid_currency
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.exceptions import DuplicateWalletError
 from app.models.user import User
 from app.repositories import user_repo
 from app.schemas.auth import (
@@ -151,7 +152,7 @@ def update_profile(
         # Create wallet if it doesn't exist
         try:
             create_wallet(db, current_user.id, request.default_currency.upper())
-        except ValueError:
+        except DuplicateWalletError:
             pass  # Wallet already exists
         current_user.default_currency = request.default_currency.upper()
 

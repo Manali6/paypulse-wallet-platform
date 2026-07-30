@@ -4,6 +4,7 @@ import { formatCurrency, formatDate } from '../lib/formatters';
 import { Send, Search, CheckCircle2, ArrowRight } from 'lucide-react';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
+import { handleApiError } from '../lib/api';
 
 export const Transfers: React.FC = () => {
   const { wallets, transfers, fetchWallets, fetchTransfers, initiateTransfer } = useWalletStore();
@@ -78,7 +79,7 @@ export const Transfers: React.FC = () => {
       setAmount('');
       setDescription('');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Transfer failed');
+      toast.error(handleApiError(err, 'Transfer failed'));
     } finally {
       setIsSubmitting(false);
     }

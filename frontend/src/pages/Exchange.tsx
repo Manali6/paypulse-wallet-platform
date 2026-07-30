@@ -3,6 +3,7 @@ import { useWalletStore } from '../store/walletStore';
 import { formatCurrency, formatDate } from '../lib/formatters';
 import { RefreshCw, ArrowRightLeft, CheckCircle2, TrendingUp } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { handleApiError } from '../lib/api';
 
 const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'SGD'];
 
@@ -64,7 +65,7 @@ export const Exchange: React.FC = () => {
       );
       setAmount('');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Conversion failed');
+      toast.error(handleApiError(err, 'Conversion failed'));
     } finally {
       setIsSubmitting(false);
     }

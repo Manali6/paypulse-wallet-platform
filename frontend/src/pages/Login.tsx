@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
+import { handleApiError } from '../lib/api';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ export const Login: React.FC = () => {
       toast.success('Logged in successfully!');
       navigate('/');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to login');
+      toast.error(handleApiError(err, 'Failed to login'));
     }
   };
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { getAssetUrl } from '../lib/api';
+import { getAssetUrl, handleApiError } from '../lib/api';
 import toast from 'react-hot-toast';
-import { Camera } from 'lucide-react';
+import { Camera, Save, Settings, User } from 'lucide-react';
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD'];
 
@@ -33,78 +33,87 @@ export const Profile: React.FC = () => {
       }
       toast.success('Profile updated successfully!');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to update profile');
+      toast.error(handleApiError(err, 'Failed to update profile'));
     }
   };
 
   return (
-    <div className="container" style={{ maxWidth: '600px', marginTop: '40px' }}>
-      <div className="card">
-        <h2 style={{ marginBottom: '24px' }}>Profile Settings</h2>
+    <div className="animate-fade-in-up" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 8px 0', color: 'var(--text-primary)' }}>Account Settings</h1>
+        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Manage your profile details and preferences</p>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
         
-        <form onSubmit={handleSubmit}>
-          <div className="animate-fade-in-up" style={{ display: 'flex', alignItems: 'center', marginBottom: '32px', gap: '20px' }}>
+        {/* Avatar Card */}
+        <div className="glass-card" style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', color: 'var(--text-secondary)' }}>
+            <User size={18} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>Profile Picture</h2>
+          </div>
+          
+          <div 
+            style={{ 
+              position: 'relative',
+              width: '120px', 
+              height: '120px', 
+              borderRadius: '50%', 
+              backgroundColor: 'var(--bg-secondary)', 
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '2px solid var(--border)',
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-lg)',
+              transition: 'all var(--transition-fast)'
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            onMouseEnter={(e) => {
+              const overlay = e.currentTarget.querySelector('.avatar-overlay') as HTMLElement;
+              if (overlay) overlay.style.opacity = '1';
+              e.currentTarget.style.borderColor = 'var(--accent-primary)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 240, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              const overlay = e.currentTarget.querySelector('.avatar-overlay') as HTMLElement;
+              if (overlay) overlay.style.opacity = '0';
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+            }}
+          >
+            {photoUrl ? (
+              <img src={getAssetUrl(photoUrl)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
+            ) : (
+              <span style={{ fontSize: '3rem', color: 'var(--text-secondary)' }}>
+                {user?.display_name?.charAt(0).toUpperCase()}
+              </span>
+            )}
+            
             <div 
-              style={{ 
-                position: 'relative',
-                width: '96px', 
-                height: '96px', 
-                borderRadius: '50%', 
-                backgroundColor: 'var(--bg-secondary)', 
-                overflow: 'hidden',
+              className="avatar-overlay"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '2px solid var(--border)',
-                cursor: 'pointer',
-                boxShadow: 'var(--shadow-md)',
-                transition: 'all var(--transition-fast)'
-              }}
-              onClick={() => fileInputRef.current?.click()}
-              onMouseEnter={(e) => {
-                const overlay = e.currentTarget.querySelector('.avatar-overlay') as HTMLElement;
-                if (overlay) overlay.style.opacity = '1';
-                e.currentTarget.style.borderColor = 'var(--accent-primary)';
-              }}
-              onMouseLeave={(e) => {
-                const overlay = e.currentTarget.querySelector('.avatar-overlay') as HTMLElement;
-                if (overlay) overlay.style.opacity = '0';
-                e.currentTarget.style.borderColor = 'var(--border)';
+                opacity: 0,
+                transition: 'opacity var(--transition-fast)'
               }}
             >
-              {photoUrl ? (
-                <img src={getAssetUrl(photoUrl)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
-              ) : (
-                <span style={{ fontSize: '2.5rem', color: 'var(--text-secondary)' }}>
-                  {user?.display_name?.charAt(0).toUpperCase()}
-                </span>
-              )}
-              
-              <div 
-                className="avatar-overlay"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: 0,
-                  transition: 'opacity var(--transition-fast)'
-                }}
-              >
-                <Camera color="white" size={24} />
-              </div>
-            </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>{user?.display_name}</h3>
-              <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)' }}>{user?.email}</p>
+              <Camera color="white" size={28} />
             </div>
           </div>
-
+          
+          <h3 style={{ margin: '20px 0 4px 0', fontSize: '1.25rem', fontWeight: 600 }}>{user?.display_name}</h3>
+          <p style={{ margin: '0', color: 'var(--text-secondary)' }}>{user?.email}</p>
+          
           <input
             type="file"
             accept="image/*"
@@ -117,30 +126,48 @@ export const Profile: React.FC = () => {
               }
             }}
           />
+        </div>
 
-          <div className="input-group">
-            <label htmlFor="defaultCurrency">Default Currency</label>
-            <select
-              id="defaultCurrency"
-              className="input"
-              value={defaultCurrency}
-              onChange={(e) => setDefaultCurrency(e.target.value)}
-            >
-              {CURRENCIES.map((curr) => (
-                <option key={curr} value={curr} style={{ backgroundColor: 'var(--bg-secondary)' }}>
-                  {curr}
-                </option>
-              ))}
-            </select>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              Changing this will automatically create a wallet in the new currency if you don't have one.
-            </p>
+        {/* Preferences Card */}
+        <div className="glass-card" style={{ padding: '32px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', color: 'var(--text-secondary)' }}>
+            <Settings size={18} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>Preferences</h2>
           </div>
+          
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div className="input-group" style={{ marginBottom: '24px', flex: 1 }}>
+              <label htmlFor="defaultCurrency">Default Currency</label>
+              <select
+                id="defaultCurrency"
+                className="input"
+                value={defaultCurrency}
+                onChange={(e) => setDefaultCurrency(e.target.value)}
+                style={{ cursor: 'pointer' }}
+              >
+                {CURRENCIES.map((curr) => (
+                  <option key={curr} value={curr} style={{ backgroundColor: 'var(--bg-secondary)' }}>
+                    {curr}
+                  </option>
+                ))}
+              </select>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '8px', lineHeight: '1.4' }}>
+                Your default currency determines how your total balance is displayed. Changing this will automatically create a wallet in the new currency if you don't already have one.
+              </p>
+            </div>
 
-          <button type="submit" className="btn btn-primary" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              disabled={isLoading}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', marginTop: 'auto' }}
+            >
+              <Save size={18} />
+              {isLoading ? 'Saving Changes...' : 'Save Changes'}
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   );

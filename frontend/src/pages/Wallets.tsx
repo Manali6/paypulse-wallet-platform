@@ -3,6 +3,7 @@ import { useWalletStore, type Wallet } from '../store/walletStore';
 import { formatCurrency } from '../lib/formatters';
 import { Plus, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { handleApiError } from '../lib/api';
 
 const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'SGD'];
 
@@ -15,10 +16,18 @@ export const Wallets: React.FC = () => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const existingCurrencies = wallets.map((w) => w.currency);
+  const selectableCurrencies = AVAILABLE_CURRENCIES.filter((c) => !existingCurrencies.includes(c));
 
   useEffect(() => {
     fetchWallets();
   }, [fetchWallets]);
+
+  useEffect(() => {
+    if (isAddModalOpen && selectableCurrencies.length > 0 && !selectableCurrencies.includes(newCurrency)) {
+      setNewCurrency(selectableCurrencies[0]);
+    }
+  }, [isAddModalOpen, selectableCurrencies, newCurrency]);
 
   const handleCreateWallet = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ export const Wallets: React.FC = () => {
       toast.success(`${newCurrency} Wallet created!`);
       setIsAddModalOpen(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to create wallet');
+      toast.error(handleApiError(err, 'Failed to create wallet'));
     } finally {
       setIsSubmitting(false);
     }
@@ -51,14 +60,13 @@ export const Wallets: React.FC = () => {
       setAmount('');
       setDescription('');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Transaction failed');
+      toast.error(handleApiError(err, 'Transaction failed'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const existingCurrencies = wallets.map((w) => w.currency);
-  const selectableCurrencies = AVAILABLE_CURRENCIES.filter((c) => !existingCurrencies.includes(c));
+
 
   return (
     <div className="animate-in">

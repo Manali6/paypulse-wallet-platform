@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
+import { handleApiError } from '../lib/api';
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD'];
 
@@ -20,7 +21,7 @@ export const Signup: React.FC = () => {
       toast.success('Account created successfully!');
       navigate('/');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Signup failed');
+      toast.error(handleApiError(err, 'Signup failed'));
     }
   };
 

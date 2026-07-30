@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -8,6 +8,7 @@ import { Wallets } from './pages/Wallets';
 import { Transfers } from './pages/Transfers';
 import { Exchange } from './pages/Exchange';
 import { Profile } from './pages/Profile';
+import { NotFound } from './pages/NotFound';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
 export const App: React.FC = () => {
@@ -35,7 +36,7 @@ export const App: React.FC = () => {
           <Route path="/profile" element={<Profile />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
