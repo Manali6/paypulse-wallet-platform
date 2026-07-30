@@ -132,23 +132,14 @@ jobs:
           else
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
-      - name: Install Railway CLI
-        if: steps.check-token.outputs.skip == 'false'
-        run: npm i -g @railway/cli
       - name: Deploy to Railway
         if: steps.check-token.outputs.skip == 'false'
         continue-on-error: true
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
-        run: |
-          cd backend
-          npx @railway/cli logout || true
-          if [ -n "$RAILWAY_SERVICE" ]; then
-            npx @railway/cli up --service "$RAILWAY_SERVICE" --detach
-          else
-            npx @railway/cli up --detach
-          fi
+        uses: b3obby/railway-action@v3.3.0
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          service: ${{ secrets.RAILWAY_SERVICE }}
+          working_directory: ./backend
 
   deploy-frontend:
     name: Deploy Frontend (Vercel)
