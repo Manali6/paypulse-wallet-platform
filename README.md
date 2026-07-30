@@ -124,6 +124,5 @@ The application is deployed on:
 
 ## Architecture & Design
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for sequence diagrams and domain models.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for sequence diagrams, domain models, and the Scale Exercise design note (500k users / 100 TPS).
 See [AI_USAGE.md](./AI_USAGE.md) for details on AI acceleration.
-See [SCALE.md](./SCALE.md) for scaling strategy (500k users / 100 TPS).
