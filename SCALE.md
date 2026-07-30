@@ -28,7 +28,15 @@
 
 ---
 
-## 3. Operational & Cost Optimisation
+## 3. Exchange Provider Downtime Strategy
+
+- **Stale Cache Fallback**: If the external FX provider goes down, the background `APScheduler` job will fail. The system is designed to seamlessly fall back to the most recently cached Redis rates. We configure the Redis TTL to outlast typical provider outages (e.g., 24-48 hours) while setting a "stale" flag on the UI.
+- **Circuit Breaker Pattern**: If the provider starts throwing 5xx errors, a circuit breaker trip prevents cascading failures and network timeouts, immediately switching the app to fallback cache mode.
+- **Rate Spread Adjustment**: During prolonged downtime, the application can programmatically apply a safety margin (e.g., a 2% spread) to stale exchange rates to mitigate the business risk of currency volatility until the provider recovers.
+
+---
+
+## 4. Operational & Cost Optimisation
 
 - **Read Replica Routing**: Direct `GET /transactions` and `GET /wallets` traffic to read replicas.
 - **Auto-archiving**: Move transaction records older than 1 year to cold storage (e.g., AWS S3 + Parquet format via AWS Athena) to optimize DB disk costs.
