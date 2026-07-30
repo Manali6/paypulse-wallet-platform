@@ -138,6 +138,8 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
+          rm -rf ~/.railway
+          export RAILWAY_TOKEN=$(echo "${{ secrets.RAILWAY_TOKEN }}" | tr -d '\r\n ')
           cd backend
           npx @railway/cli@latest deploy || echo "Railway deployment completed or skipped"
 
