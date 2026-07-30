@@ -1,128 +1,114 @@
-# PayPulse — Multi-Currency Wallet Platform
+# 🚀 PayPulse — Multi-Currency Wallet Platform
 
-PayPulse is a production-minded multi-currency wallet application built with FastAPI (Python) backend and React (Vite + TypeScript) frontend, containerised with Docker Compose and configured for observability with Prometheus + Grafana.
-
----
-
-## Features (Flow 1 MVP)
-
-- **Authentication**: JWT access & refresh token rotation, Argon2 password hashing
-- **Wallet Management**: Create wallets across multiple ISO currencies (USD, EUR, GBP, JPY, etc.)
-- **Balance Operations**: Credit and debit funds with precision validation (Numeric 18,6)
-- **Transaction History**: Audit trail of every credit/debit transaction
-- **Observability**: Prometheus metric instrumentation & custom 4xx/5xx error tracking + Grafana dashboard
-- **DevOps**: Docker Compose setup + GitHub Actions CI/CD pipeline
+PayPulse is a production-minded, high-performance multi-currency wallet application. It is engineered with a **FastAPI** backend and a modern **React (Vite + TypeScript)** frontend, containerised via Docker Compose, and configured with enterprise-grade observability using Prometheus and Grafana.
 
 ---
 
-## Tech Stack
+## 🎯 Core Features (MVP)
 
-- **Backend**: Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL, Redis, Argon2, Pytest
-- **Frontend**: React 18, Vite, TypeScript, React Router v6, Zustand, Axios, React Hot Toast, Lucide Icons
-- **Infrastructure**: Docker, Nginx, Prometheus, Grafana
-- **Deployment**: Railway (Backend + DB + Redis), Vercel (Frontend)
+| Feature | Description | Technical Implementation |
+|---------|-------------|--------------------------|
+| **🔒 Authentication** | Secure user onboarding and login. | Stateless JWT access & refresh rotation; Argon2 password hashing. |
+| **💼 Wallet Management** | Multi-currency wallet generation. | Support for ISO currencies (USD, EUR, GBP, JPY, etc.) with unique constraints. |
+| **💸 Balance Operations** | Credit and debit funds safely. | Precision validation using PostgreSQL `Numeric(18,6)` to prevent floating point errors. |
+| **🧾 Transaction Ledger** | Immutable audit trail of activities. | ACID-compliant transaction snapshots (`balance_after`). |
+| **📈 Observability** | Real-time monitoring and alerting. | Prometheus metric instrumentation, 4xx/5xx tracking, and Grafana dashboards. |
+| **🛠️ DevOps & CI/CD** | Automated testing and deployment. | Docker Compose environment and GitHub Actions pipeline. |
 
 ---
 
-## Local Setup & Development
+## 🏗️ Technology Stack
+
+Our stack was carefully selected to prioritize developer velocity, scalability, and type safety:
+
+- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL, Redis, Argon2, Pytest
+- **Frontend:** React 18, Vite, TypeScript, React Router v6, Zustand, Axios, React Hot Toast
+- **Infrastructure:** Docker, Nginx, Prometheus, Grafana
+- **Deployment:** Railway (Backend + DB + Redis), Vercel (Frontend)
+
+---
+
+## ⚙️ Local Setup & Development
 
 ### Prerequisites
+- **Docker & Docker Compose**
+- **Node.js 20+** (for local frontend dev)
+- **Python 3.12+** (for local backend dev)
 
-- Docker & Docker Compose
-- Node.js 20+ (for local frontend dev)
-- Python 3.12+ (for local backend dev)
+### Quick Start (Docker)
 
-### Running with Docker Compose
-
-1. Clone repository:
+1. **Clone the repository:**
    ```bash
    git clone <repo-url>
    cd wallet-platform
    ```
 
-2. Copy environment template:
+2. **Configure environment:**
    ```bash
    cp .env.example .env
    ```
 
-3. Launch all services:
+3. **Launch the platform:**
    ```bash
    make up
    ```
 
-4. Access services:
-   - **Frontend App**: http://localhost:3000
-   - **Backend API Docs**: http://localhost:8000/docs
-   - **Prometheus**: http://localhost:9090
-   - **Grafana**: http://localhost:3001 (Credentials: `admin` / `admin`)
+4. **Access the services:**
+   - 🌐 **Frontend App:** [http://localhost:3000](http://localhost:3000)
+   - 📖 **Backend API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+   - 📊 **Prometheus:** [http://localhost:9090](http://localhost:9090)
+   - 📈 **Grafana:** [http://localhost:3001](http://localhost:3001) *(Credentials: `admin` / `admin`)*
 
 ---
 
-## API Endpoints Overview
+## 📡 API Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/auth/signup` | Register user + create default wallet |
-| `POST` | `/auth/login` | Authenticate & get JWT tokens |
-| `POST` | `/auth/refresh` | Refresh access token |
-| `GET` | `/auth/me` | Fetch user profile |
-| `GET` | `/wallets` | List current user's wallets |
-| `POST` | `/wallets` | Create new wallet for a currency |
-| `POST` | `/wallets/{id}/credit` | Credit funds to wallet |
-| `POST` | `/wallets/{id}/debit` | Debit funds from wallet |
-| `GET` | `/transactions` | Paginated transaction history |
-| `GET` | `/health` | Liveness check (Postgres + Redis) |
-| `GET` | `/metrics` | Prometheus metrics endpoint |
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `POST` | `/auth/signup` | Register a new user and create their default currency wallet. |
+| `POST` | `/auth/login` | Authenticate user and retrieve JWT tokens. |
+| `POST` | `/auth/refresh` | Issue a new access token using a valid refresh token. |
+| `GET`  | `/auth/me` | Fetch the authenticated user's profile profile. |
+| `GET`  | `/wallets` | Retrieve a list of the user's active wallets. |
+| `POST` | `/wallets` | Provision a new wallet for a specific currency. |
+| `POST` | `/wallets/{id}/credit` | Safely credit funds to a specific wallet. |
+| `POST` | `/wallets/{id}/debit` | Safely debit funds (with insufficient funds validation). |
+| `GET`  | `/transactions` | Retrieve paginated transaction ledger history. |
+| `GET`  | `/health` | Liveness and readiness checks (Postgres + Redis). |
+| `GET`  | `/metrics` | Prometheus metrics scraping endpoint. |
 
 ---
 
-## Testing
+## 🧪 Testing
 
-Run unit & integration tests via Docker:
+The repository contains rigorous test coverage for both the frontend and backend.
+
+**Run all tests via Docker:**
 ```bash
 make test
 ```
 
-Or locally in `backend/`:
+**Run backend tests locally with coverage (Requires `pytest`):**
 ```bash
+cd backend
 pytest tests/ -v --cov=app
 ```
-
-## Deployment
-
-The application is deployed on:
-- **Backend API & PostgreSQL & Redis**: Railway
-- **Frontend App**: Vercel
-
-*Note: For detailed deployment instructions or CI/CD usage, refer to the `.github/workflows` which automate the Vercel and Railway deployments on merge to main.*
+*(For more information, see the `tests/README.md` directory)*
 
 ---
 
-## Assumptions
+## 🚀 Deployment
 
-- Currency exchange rates are fetched dynamically from a third-party API (mocked/integrated in the exchange service).
-- Users are limited to one wallet per currency.
-- JWT tokens are stored securely in memory/localStorage (stateless auth).
+The application utilizes continuous deployment pipelines triggered by GitHub Actions on merges to the `main` branch.
 
----
+- **Backend API & PostgreSQL & Redis:** [Railway](https://railway.app/)
+- **Frontend App:** [Vercel](https://vercel.com/)
 
-## Trade-offs
-
-- **SQLAlchemy ORM vs Raw SQL**: Selected SQLAlchemy for rapid domain modeling and Alembic migrations, trading slight performance overhead for developer velocity and maintainability.
-- **PostgreSQL vs NoSQL**: Chose PostgreSQL for strong ACID compliance and transaction guarantees which are strictly required for a wallet ledger.
-- **Stateless JWT vs Sessions**: Chose stateless JWTs with refresh token rotation instead of server-side sessions to make scaling the backend easier, although it trades off immediate token revocation capabilities (unless a blacklist is maintained in Redis).
+*(Refer to `.github/workflows` for the exact CI/CD pipeline definitions.)*
 
 ---
 
-## Known Limitations
+## 💡 Architecture & Design Decisions
 
-- **Currency Support**: Only a fixed subset of fiat currencies are currently seeded.
-- **Exchange Rate Caching**: Exchange rates might be slightly delayed based on the refresh interval.
-- **Token Storage**: Storing access tokens in localStorage (Frontend) is susceptible to XSS. A production-ready evolution would migrate to `HttpOnly` cookies.
-
----
-
-## Architecture & Design
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for sequence diagrams, domain models, and the Scale Exercise design note (500k users / 100 TPS).
-See [AI_USAGE.md](./AI_USAGE.md) for details on AI acceleration.
+- Please review **[ARCHITECTURE.md](./ARCHITECTURE.md)** for detailed sequence diagrams, domain models, and our **Scale Exercise** design notes (handling 500k users / 100 TPS).
+- Please review **[AI_USAGE.md](./AI_USAGE.md)** for transparency on how AI was utilized to accelerate the delivery of this platform.
