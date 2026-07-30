@@ -10,7 +10,10 @@ This document details how Artificial Intelligence was intelligently leveraged to
 |---------|-------------------|
 | **Antigravity AI IDE** | End-to-end pair programming, scaffolding the repository, debugging Docker container path issues, refactoring FastAPI backend routes, and fixing frontend React bugs. |
 | **Gemini (via Antigravity)** | Brainstorming the financial domain model, debugging race conditions with pessimistic locking, and rewriting complex CSS for the premium glassmorphism UI. |
-| **MCP Tools** | Reading `.har` files to diagnose API network bottlenecks, automatically searching files (`grep_search`), running local bash commands (`run_command`) to execute test suites, and viewing file contents to resolve code review feedback. |
+| **Claude 3.5 Sonnet** | Architecture design brainstorming, domain modeling, API contract definitions, and scaling strategies. |
+| **Gemini 1.5 Pro** | Deep refactoring discussions, debugging complex asynchronous React state bugs, and PostgreSQL indexing. |
+| **GitHub Copilot** | Inline code completion for repetitive tasks, generating SQLAlchemy models, parsing env vars, and Vitest assertions. |
+| **MCP Tools** | Reading `.har` files to diagnose API network bottlenecks, automatically searching files (`grep_search`), executing local bash commands (`run_command`), editing files (`replace_file_content`), and automating UI testing via the `chrome-devtools-mcp`. |
 
 ---
 
