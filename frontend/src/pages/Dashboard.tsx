@@ -48,7 +48,7 @@ export const Dashboard: React.FC = () => {
             No transactions yet. Credit a wallet to get started!
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {transactions.map((tx) => (
               <div
                 key={tx.id}

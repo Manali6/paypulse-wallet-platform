@@ -8,6 +8,20 @@ export const Sidebar: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
+  const getNavLinkStyle = ({ isActive }: { isActive: boolean }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '10px 14px',
+    borderRadius: 'var(--radius-sm)',
+    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+    backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
+    borderLeft: isActive ? '3px solid var(--accent-primary)' : '3px solid transparent',
+    boxShadow: isActive ? '-10px 0 15px -10px var(--accent-primary)' : 'none',
+    fontWeight: isActive ? 600 : 500,
+    transition: 'all var(--transition-fast)'
+  });
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -70,17 +84,7 @@ export const Sidebar: React.FC = () => {
           <NavLink
             to="/"
             end
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
-              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
-              fontWeight: isActive ? 600 : 500,
-            })}
+            style={getNavLinkStyle}
           >
             <LayoutDashboard size={18} />
             Dashboard
@@ -88,17 +92,7 @@ export const Sidebar: React.FC = () => {
 
           <NavLink
             to="/wallets"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
-              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
-              fontWeight: isActive ? 600 : 500,
-            })}
+            style={getNavLinkStyle}
           >
             <Wallet size={18} />
             Wallets
@@ -106,17 +100,7 @@ export const Sidebar: React.FC = () => {
 
           <NavLink
             to="/transfers"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
-              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
-              fontWeight: isActive ? 600 : 500,
-            })}
+            style={getNavLinkStyle}
           >
             <Send size={18} />
             Transfers
@@ -124,17 +108,7 @@ export const Sidebar: React.FC = () => {
 
           <NavLink
             to="/exchange"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
-              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
-              fontWeight: isActive ? 600 : 500,
-            })}
+            style={getNavLinkStyle}
           >
             <ArrowRightLeft size={18} />
             Exchange
@@ -142,17 +116,7 @@ export const Sidebar: React.FC = () => {
 
           <NavLink
             to="/profile"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
-              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
-              fontWeight: isActive ? 600 : 500,
-            })}
+            style={getNavLinkStyle}
           >
             <UserIcon size={18} />
             Profile
