@@ -1,7 +1,6 @@
 """Auth router — signup, login, and token refresh endpoints."""
 
-import os
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.currencies import is_valid_currency
@@ -194,7 +193,7 @@ async def upload_profile_photo(
     contents = await file.read()
     
     # Write to local file
-    with open(file_path, "wb") as f:
+    with open(file_path, "wb") as f:  # noqa: ASYNC230
         f.write(contents)
         
     # Construct relative URL so frontend can prepend the backend URL
