@@ -60,7 +60,7 @@ export const Sidebar: React.FC = () => {
               width: '36px',
               height: '36px',
               borderRadius: 'var(--radius-sm)',
-              background: 'var(--accent-gradient)',
+              background: 'var(--accent-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -71,7 +71,7 @@ export const Sidebar: React.FC = () => {
             W
           </div>
           <div>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.2, color: 'var(--accent-primary)', letterSpacing: '-0.5px' }}>
               PayPulse
             </h2>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
