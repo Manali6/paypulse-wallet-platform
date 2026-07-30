@@ -160,7 +160,7 @@ jobs:
           elif [ -n "$RAILWAY_TOKEN" ]; then
             rm -rf ~/.railway
             export RAILWAY_TOKEN=$(echo "$RAILWAY_TOKEN" | tr -d '\r\n ')
-            cd backend && npx @railway/cli@latest deploy || echo "Railway CLI deploy completed or skipped"
+            cd backend && npx @railway/cli@latest deploy
           else
             echo "Neither RAILWAY_DEPLOY_HOOK nor RAILWAY_TOKEN set. Railway auto-deploys on git push if repo is linked."
           fi
