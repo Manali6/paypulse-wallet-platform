@@ -4,6 +4,17 @@ PayPulse is a production-minded, high-performance multi-currency wallet applicat
 
 ---
 
+## Deployment URLs
+
+The application utilizes continuous deployment pipelines triggered by GitHub Actions on merges to the `main` branch.
+
+- **Frontend App (Vercel):** [https://paypulse-wallet-platform.vercel.app/](https://paypulse-wallet-platform.vercel.app/)
+- **Backend API (Railway):** [https://paypulse-wallet-platform-production.up.railway.app/health](https://paypulse-wallet-platform-production.up.railway.app/health)
+
+*(Refer to `.github/workflows` for the exact CI/CD pipeline definitions.)*
+
+---
+
 ## Core Features (MVP)
 
 | Feature | Description | Technical Implementation |
@@ -19,12 +30,10 @@ PayPulse is a production-minded, high-performance multi-currency wallet applicat
 
 ## Technology Stack
 
-Our stack was carefully selected to prioritize developer velocity, scalability, and type safety:
+Our stack was carefully selected to prioritize developer velocity, scalability, and type safety.
 
-- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL, Redis, Argon2, Pytest
-- **Frontend:** React 18, Vite, TypeScript, React Router v6, Zustand, Axios, React Hot Toast
-- **Infrastructure:** Docker, Nginx, Prometheus, Grafana
-- **Deployment:** Railway (Backend + DB + Redis), Vercel (Frontend)
+- **Minimal Backend:** FastAPI, PostgreSQL, Redis
+- **Minimal Frontend:** React, Vite, Zustand
 
 ---
 
@@ -94,17 +103,6 @@ cd backend
 pytest tests/ -v --cov=app
 ```
 *(For more information, see the `tests/README.md` directory)*
-
----
-
-## Deployment
-
-The application utilizes continuous deployment pipelines triggered by GitHub Actions on merges to the `main` branch.
-
-- **Backend API & PostgreSQL & Redis:** Deployed on Railway at [https://paypulse-wallet-platform-production.up.railway.app/health](https://paypulse-wallet-platform-production.up.railway.app/health)
-- **Frontend App:** Deployed on Vercel at [https://paypulse-wallet-platform.vercel.app/](https://paypulse-wallet-platform.vercel.app/)
-
-*(Refer to `.github/workflows` for the exact CI/CD pipeline definitions.)*
 
 ---
 
