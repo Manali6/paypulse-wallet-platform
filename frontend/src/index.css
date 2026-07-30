@@ -396,7 +396,7 @@ select.input {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.5;
-  animation: float 20s infinite ease-in-out alternate;
+  animation: floating-orb-drift 15s infinite ease-in-out alternate;
 }
 
 .floating-orb.cyan {
@@ -418,8 +418,8 @@ select.input {
   min-height: 400px;
   bottom: -20%;
   right: -10%;
-  animation-duration: 25s;
-  animation-delay: -5s;
+  animation-duration: 20s;
+  animation-delay: -3s;
 }
 
 .floating-orb.blue {
@@ -430,21 +430,21 @@ select.input {
   min-height: 250px;
   top: 40%;
   left: 60%;
-  animation-duration: 18s;
-  animation-delay: -10s;
+  animation-duration: 12s;
+  animation-delay: -7s;
 }
 
-@keyframes float {
+@keyframes floating-orb-drift {
   0% {
     transform: translate(0, 0) scale(1);
   }
   33% {
-    transform: translate(30px, -50px) scale(1.1);
+    transform: translate(80px, -120px) scale(1.1);
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.9);
+    transform: translate(-100px, 80px) scale(0.9);
   }
   100% {
-    transform: translate(40px, 40px) scale(1.05);
+    transform: translate(120px, 120px) scale(1.05);
   }
 }
