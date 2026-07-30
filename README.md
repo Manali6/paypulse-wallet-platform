@@ -1,5 +1,41 @@
 # PayPulse — Multi-Currency Wallet Platform
 
+## Core Features (MVP)
+
+| Feature | Description | Technical Implementation |
+|---------|-------------|--------------------------|
+| **Authentication** | Secure user onboarding and login. | Stateless JWT access & refresh rotation; Argon2 password hashing. |
+| **Wallet Management** | Multi-currency wallet generation. | Support for ISO currencies (USD, EUR, GBP, JPY, etc.) with unique constraints. |
+| **Balance Operations** | Credit and debit funds safely. | Precision validation using PostgreSQL `Numeric(18,6)` to prevent floating point errors. |
+| **Transaction Ledger** | Immutable audit trail of activities. | ACID-compliant transaction snapshots (`balance_after`). |
+| **Observability** | Real-time monitoring and alerting. | Prometheus metric instrumentation, 4xx/5xx tracking, and Grafana dashboards. |
+| **DevOps & CI/CD** | Automated testing and deployment. | Docker Compose environment and GitHub Actions pipeline. |
+
+## Technology Stack
+
+Our stack was carefully selected to prioritize developer velocity, scalability, and type safety.
+
+- **Backend:** FastAPI, PostgreSQL, Redis
+- **Frontend:** React, Vite
+- **Infrastructure & Observability:** Docker Compose, Prometheus, Grafana
+- **Deployment & CI/CD:** Railway (Backend), Vercel (Frontend), GitHub Actions
+
+## API Endpoints Overview
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `POST` | `/auth/signup` | Register a new user and create their default currency wallet. |
+| `POST` | `/auth/login` | Authenticate user and retrieve JWT tokens. |
+| `POST` | `/auth/refresh` | Issue a new access token using a valid refresh token. |
+| `GET`  | `/auth/me` | Fetch the authenticated user's profile profile. |
+| `GET`  | `/wallets` | Retrieve a list of the user's active wallets. |
+| `POST` | `/wallets` | Provision a new wallet for a specific currency. |
+| `POST` | `/wallets/{id}/credit` | Safely credit funds to a specific wallet. |
+| `POST` | `/wallets/{id}/debit` | Safely debit funds (with insufficient funds validation). |
+| `GET`  | `/transactions` | Retrieve paginated transaction ledger history. |
+| `GET`  | `/health` | Liveness and readiness checks (Postgres + Redis). |
+| `GET`  | `/metrics` | Prometheus metrics scraping endpoint. |
+
 ## Setup
 
 ### Prerequisites
