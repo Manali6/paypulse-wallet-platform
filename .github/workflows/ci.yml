@@ -139,7 +139,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           cd backend
-          npx @railway/cli@latest deploy --detach || echo "Railway deployment completed or skipped"
+          npx @railway/cli@latest deploy --ci || echo "Railway deployment completed or skipped"
 
   deploy-frontend:
     name: Deploy Frontend (Vercel)
