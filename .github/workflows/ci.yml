@@ -143,7 +143,7 @@ jobs:
           RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
         run: |
           cd backend
-          export RAILWAY_TOKEN="${{ secrets.RAILWAY_TOKEN }}"
+          npx @railway/cli logout || true
           if [ -n "$RAILWAY_SERVICE" ]; then
             npx @railway/cli up --service "$RAILWAY_SERVICE" --detach
           else
