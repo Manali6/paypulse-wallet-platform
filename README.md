@@ -88,9 +88,41 @@ Or locally in `backend/`:
 pytest tests/ -v --cov=app
 ```
 
+## Deployment
+
+The application is deployed on:
+- **Backend API & PostgreSQL & Redis**: Railway
+- **Frontend App**: Vercel
+
+*Note: For detailed deployment instructions or CI/CD usage, refer to the `.github/workflows` which automate the Vercel and Railway deployments on merge to main.*
+
 ---
 
-## Architecture & Design Trade-offs
+## Assumptions
+
+- Currency exchange rates are fetched dynamically from a third-party API (mocked/integrated in the exchange service).
+- Users are limited to one wallet per currency.
+- JWT tokens are stored securely in memory/localStorage (stateless auth).
+
+---
+
+## Trade-offs
+
+- **SQLAlchemy ORM vs Raw SQL**: Selected SQLAlchemy for rapid domain modeling and Alembic migrations, trading slight performance overhead for developer velocity and maintainability.
+- **PostgreSQL vs NoSQL**: Chose PostgreSQL for strong ACID compliance and transaction guarantees which are strictly required for a wallet ledger.
+- **Stateless JWT vs Sessions**: Chose stateless JWTs with refresh token rotation instead of server-side sessions to make scaling the backend easier, although it trades off immediate token revocation capabilities (unless a blacklist is maintained in Redis).
+
+---
+
+## Known Limitations
+
+- **Currency Support**: Only a fixed subset of fiat currencies are currently seeded.
+- **Exchange Rate Caching**: Exchange rates might be slightly delayed based on the refresh interval.
+- **Token Storage**: Storing access tokens in localStorage (Frontend) is susceptible to XSS. A production-ready evolution would migrate to `HttpOnly` cookies.
+
+---
+
+## Architecture & Design
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for sequence diagrams and domain models.
 See [AI_USAGE.md](./AI_USAGE.md) for details on AI acceleration.

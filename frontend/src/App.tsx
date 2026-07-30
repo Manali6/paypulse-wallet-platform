@@ -7,6 +7,7 @@ import { Wallets } from './pages/Wallets';
 import { Transfers } from './pages/Transfers';
 import { Exchange } from './pages/Exchange';
 import { Profile } from './pages/Profile';
+import { Transactions } from './pages/Transactions';
 import { NotFound } from './pages/NotFound';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
@@ -20,6 +21,7 @@ export const App: React.FC = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/transactions" element={<Transactions />} />
           <Route path="/wallets" element={<Wallets />} />
           <Route path="/transfers" element={<Transfers />} />
           <Route path="/exchange" element={<Exchange />} />

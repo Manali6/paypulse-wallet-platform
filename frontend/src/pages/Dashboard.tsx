@@ -40,7 +40,7 @@ export const Dashboard: React.FC = () => {
       <div className="glass-card" style={{ padding: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Recent Activity</h2>
-          <Link to="/wallets" className="btn btn-secondary btn-sm">Manage Wallets</Link>
+          <Link to="/transactions" className="btn btn-secondary btn-sm">View All</Link>
         </div>
 
         {transactions.length === 0 ? (

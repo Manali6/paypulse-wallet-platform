@@ -69,7 +69,7 @@ interface WalletState {
   createWallet: (currency: string) => Promise<void>;
   creditWallet: (walletId: string, amount: string, description?: string) => Promise<void>;
   debitWallet: (walletId: string, amount: string, description?: string) => Promise<void>;
-  fetchTransactions: (params?: { wallet_id?: string; page?: number; page_size?: number }) => Promise<void>;
+  fetchTransactions: (params?: { wallet_id?: string; type?: string; page?: number; page_size?: number }) => Promise<void>;
   fetchTransfers: () => Promise<void>;
   initiateTransfer: (data: {
     recipient_email: string;

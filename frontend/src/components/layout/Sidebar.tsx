@@ -89,6 +89,14 @@ export const Sidebar: React.FC = () => {
           </NavLink>
 
           <NavLink
+            to="/transactions"
+            style={getNavLinkStyle}
+          >
+            <Activity size={18} />
+            History
+          </NavLink>
+
+          <NavLink
             to="/wallets"
             style={getNavLinkStyle}
           >
