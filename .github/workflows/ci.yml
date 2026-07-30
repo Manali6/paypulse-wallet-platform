@@ -78,10 +78,10 @@ jobs:
         run: cd backend && pytest tests/ -v --cov=app --cov-report=term-missing --cov-fail-under=80
 
   # ──────────────────────────────────────────────────────
-  # Frontend: Lint + Build
+  # Frontend: Lint + Test + Build
   # ──────────────────────────────────────────────────────
-  frontend-build:
-    name: Frontend Build
+  frontend-test:
+    name: Frontend Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -92,8 +92,22 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         run: cd frontend && npm ci
-      - name: Run Tests
+      - name: Run frontend tests
         run: cd frontend && npm run test
+
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    needs: frontend-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        run: cd frontend && npm ci
       - name: Build
         run: cd frontend && npm run build
         env:
