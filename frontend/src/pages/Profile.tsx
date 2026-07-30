@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { getAssetUrl } from '../lib/api';
 import toast from 'react-hot-toast';
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD'];
 
 export const Profile: React.FC = () => {
-  const { user, updateProfile, isLoading } = useAuthStore();
+  const { user, updateProfile, uploadPhoto, isLoading } = useAuthStore();
   const [photoUrl, setPhotoUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [defaultCurrency, setDefaultCurrency] = useState('USD');
 
   useEffect(() => {
@@ -19,10 +21,14 @@ export const Profile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateProfile({
-        photo_url: photoUrl || undefined,
-        default_currency: defaultCurrency,
-      });
+      if (selectedFile) {
+        await uploadPhoto(selectedFile);
+      }
+      if (defaultCurrency !== user?.default_currency) {
+        await updateProfile({
+          default_currency: defaultCurrency,
+        });
+      }
       toast.success('Profile updated successfully!');
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Failed to update profile');
@@ -48,7 +54,7 @@ export const Profile: React.FC = () => {
               border: '2px solid var(--border-color)'
             }}>
               {photoUrl ? (
-                <img src={photoUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                <img src={getAssetUrl(photoUrl)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
               ) : (
                 <span style={{ fontSize: '2rem', color: 'var(--text-secondary)' }}>
                   {user?.display_name?.charAt(0).toUpperCase()}
@@ -62,14 +68,19 @@ export const Profile: React.FC = () => {
           </div>
 
           <div className="input-group">
-            <label htmlFor="photoUrl">Photo URL (Avatar)</label>
+            <label htmlFor="photoUpload">Profile Picture</label>
             <input
-              id="photoUrl"
-              type="url"
+              id="photoUpload"
+              type="file"
+              accept="image/*"
               className="input"
-              value={photoUrl}
-              onChange={(e) => setPhotoUrl(e.target.value)}
-              placeholder="https://example.com/avatar.jpg"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setSelectedFile(e.target.files[0]);
+                  setPhotoUrl(URL.createObjectURL(e.target.files[0]));
+                }
+              }}
+              style={{ paddingTop: '8px' }}
             />
           </div>
 

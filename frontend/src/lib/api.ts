@@ -9,6 +9,13 @@ const api = axios.create({
   },
 });
 
+export const getAssetUrl = (path: string) => {
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('blob:')) return path; // for local preview
+  const base = API_URL.endsWith('/api/v1') ? API_URL.slice(0, -7) : API_URL;
+  return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
 // Request interceptor: attach Bearer token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');

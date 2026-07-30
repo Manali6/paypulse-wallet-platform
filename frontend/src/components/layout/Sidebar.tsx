@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Wallet, Send, ArrowRightLeft, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { getAssetUrl } from '../../lib/api';
 
 export const Sidebar: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -185,7 +186,7 @@ export const Sidebar: React.FC = () => {
               }}
             >
               {user.photo_url ? (
-                <img src={user.photo_url} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                <img src={getAssetUrl(user.photo_url)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
               ) : (
                 <UserIcon size={18} />
               )}

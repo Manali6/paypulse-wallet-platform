@@ -1,6 +1,7 @@
 """Auth router — signup, login, and token refresh endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+import os
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app.currencies import is_valid_currency
@@ -157,6 +158,48 @@ def update_profile(
     if request.photo_url is not None:
         current_user.photo_url = request.photo_url
 
+    db.commit()
+    db.refresh(current_user)
+
+    return UserResponse(
+        id=str(current_user.id),
+        email=current_user.email,
+        display_name=current_user.display_name,
+        default_currency=current_user.default_currency,
+        photo_url=current_user.photo_url,
+        created_at=current_user.created_at.isoformat(),
+    )
+
+
+@router.post("/profile/upload", response_model=UserResponse)
+async def upload_profile_photo(
+    file: UploadFile = File(...),
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Upload a profile photo."""
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File must be an image",
+        )
+
+    # In production this would go to S3. Here we save locally to uploads/avatars/
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{current_user.id}.{ext}"
+    file_path = f"uploads/avatars/{filename}"
+    
+    # Read the file contents
+    contents = await file.read()
+    
+    # Write to local file
+    with open(file_path, "wb") as f:
+        f.write(contents)
+        
+    # Construct relative URL so frontend can prepend the backend URL
+    photo_url = f"/uploads/avatars/{filename}"
+    current_user.photo_url = photo_url
+    
     db.commit()
     db.refresh(current_user)
 

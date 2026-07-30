@@ -21,6 +21,7 @@ interface AuthState {
   fetchUser: () => Promise<void>;
   checkAuth: () => void;
   updateProfile: (data: { default_currency?: string; photo_url?: string }) => Promise<void>;
+  uploadPhoto: (file: File) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -96,6 +97,21 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.put('/auth/profile', data);
+      set({ user: response.data, isLoading: false });
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
+  },
+
+  uploadPhoto: async (file: File) => {
+    set({ isLoading: true });
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await api.post('/auth/profile/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       set({ user: response.data, isLoading: false });
     } catch (error) {
       set({ isLoading: false });

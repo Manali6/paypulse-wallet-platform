@@ -1,7 +1,10 @@
 """Wallet Platform — FastAPI Application Factory."""
 
+import os
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -23,6 +26,10 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
     )
+
+    # Ensure uploads directory exists
+    os.makedirs("uploads/avatars", exist_ok=True)
+    application.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
     application.state.limiter = limiter
     application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
