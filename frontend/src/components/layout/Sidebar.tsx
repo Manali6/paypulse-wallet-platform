@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, Send, ArrowRightLeft, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, Wallet, Send, ArrowRightLeft, LogOut, User as UserIcon, Activity } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { getAssetUrl } from '../../lib/api';
 
@@ -64,11 +64,9 @@ export const Sidebar: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: 800,
-              color: '#fff',
             }}
           >
-            W
+            <Activity color="white" size={20} />
           </div>
           <div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.2, color: 'var(--accent-primary)', letterSpacing: '-0.5px' }}>

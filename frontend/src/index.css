@@ -116,7 +116,7 @@ a:hover {
 }
 
 .btn-primary {
-  background: var(--accent-gradient);
+  background: var(--accent-primary);
   color: white;
   box-shadow: var(--shadow-sm);
 }
