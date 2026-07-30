@@ -34,6 +34,8 @@ Our stack was carefully selected to prioritize developer velocity, scalability, 
 
 - **Minimal Backend:** FastAPI, PostgreSQL, Redis
 - **Minimal Frontend:** React, Vite, Zustand
+- **Infrastructure & Observability:** Docker Compose, Prometheus, Grafana
+- **Deployment & CI/CD:** Railway (Backend), Vercel (Frontend), GitHub Actions
 
 ---
 
