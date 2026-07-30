@@ -1,3 +1,5 @@
+"""Wallet Platform — FastAPI Application Factory."""
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -25,17 +27,38 @@ def create_app() -> FastAPI:
     application.state.limiter = limiter
     application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+    # ── CORS (Must be added FIRST so it is outermost for all responses including errors) ──
+    cors_origins = settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS else ["*"]
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins if cors_origins != ["*"] else [],
+        allow_origin_regex=r"https?://.*"
+        if cors_origins == ["*"] or "*" in cors_origins
+        else None,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     # ── Middleware for Tracking 4xx/5xx Errors in Prometheus ──
     @application.middleware("http")
     async def track_error_metrics(request: Request, call_next):
-        response = await call_next(request)
-        if response.status_code >= 400:
+        try:
+            response = await call_next(request)
+            if response.status_code >= 400:
+                HTTP_ERRORS_TOTAL.labels(
+                    status_code=str(response.status_code),
+                    method=request.method,
+                    path=request.url.path,
+                ).inc()
+            return response
+        except Exception:
             HTTP_ERRORS_TOTAL.labels(
-                status_code=str(response.status_code),
+                status_code="500",
                 method=request.method,
                 path=request.url.path,
             ).inc()
-        return response
+            raise
 
     # ── Prometheus Instrumentator ─────────────────────────
     Instrumentator().instrument(application).expose(application, endpoint="/metrics")
@@ -48,15 +71,6 @@ def create_app() -> FastAPI:
     application.include_router(transfers.router)
     application.include_router(fx.router)
     application.include_router(transactions.router)
-
-    # ── CORS (Added last so it's the outermost middleware) ──
-    application.add_middleware(
-        CORSMiddleware,
-        allow_origin_regex=r"https?://.*",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
     return application
 
