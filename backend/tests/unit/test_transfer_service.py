@@ -19,8 +19,6 @@ from app.services.transfer_service import (
 )
 
 
-
-
 class TestCreateTransferValidation:
     def test_self_transfer_fails(self):
         db = MagicMock()
