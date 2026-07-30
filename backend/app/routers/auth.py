@@ -191,6 +191,10 @@ async def upload_profile_photo(
     ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
     filename = f"{current_user.id}.{ext}"
     file_path = f"uploads/avatars/{filename}"
+    
+    import os
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
 
     # Read the file contents
     contents = await file.read()
