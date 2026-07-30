@@ -6,7 +6,6 @@ describe('authStore', () => {
     // Reset store state before each test
     useAuthStore.setState({
       user: null,
-      token: null,
       isAuthenticated: false,
     });
     localStorage.clear();

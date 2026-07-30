@@ -9,4 +9,4 @@ const localStorageMock = (() => {
     clear: () => { store = {}; }
   };
 })();
-Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
