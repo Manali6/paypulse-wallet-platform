@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface AlertProps {
   type: 'error' | 'success';
   message: string;
   onClose?: () => void;
+  autoCloseMs?: number;
 }
 
-export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
+export const Alert: React.FC<AlertProps> = ({ type, message, onClose, autoCloseMs = 6000 }) => {
+  useEffect(() => {
+    if (message && onClose) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, autoCloseMs);
+      return () => clearTimeout(timer);
+    }
+  }, [message, onClose, autoCloseMs]);
+
   if (!message) return null;
 
   const isError = type === 'error';
