@@ -22,6 +22,7 @@ class User(Base):
     default_currency: Mapped[str] = mapped_column(
         String(3), nullable=False, default="USD"
     )
+    photo_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

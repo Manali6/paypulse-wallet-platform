@@ -14,6 +14,7 @@ from app.schemas.auth import (
     SignupRequest,
     TokenResponse,
     UserResponse,
+    UserUpdate,
 )
 from app.services.auth_service import (
     create_access_token,
@@ -128,5 +129,42 @@ def get_me(current_user=Depends(get_current_user)):
         email=current_user.email,
         display_name=current_user.display_name,
         default_currency=current_user.default_currency,
+        photo_url=current_user.photo_url,
+        created_at=current_user.created_at.isoformat(),
+    )
+
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(
+    request: UserUpdate,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update the current user's profile."""
+    if request.default_currency is not None:
+        if not is_valid_currency(request.default_currency):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported currency: {request.default_currency}",
+            )
+        # Create wallet if it doesn't exist
+        try:
+            create_wallet(db, current_user.id, request.default_currency.upper())
+        except ValueError:
+            pass  # Wallet already exists
+        current_user.default_currency = request.default_currency.upper()
+
+    if request.photo_url is not None:
+        current_user.photo_url = request.photo_url
+
+    db.commit()
+    db.refresh(current_user)
+
+    return UserResponse(
+        id=str(current_user.id),
+        email=current_user.email,
+        display_name=current_user.display_name,
+        default_currency=current_user.default_currency,
+        photo_url=current_user.photo_url,
         created_at=current_user.created_at.isoformat(),
     )

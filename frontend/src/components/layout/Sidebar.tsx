@@ -138,6 +138,24 @@ export const Sidebar: React.FC = () => {
             <ArrowRightLeft size={18} />
             Exchange
           </NavLink>
+
+          <NavLink
+            to="/profile"
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '10px 14px',
+              borderRadius: 'var(--radius-sm)',
+              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+              backgroundColor: isActive ? 'var(--bg-glass)' : 'transparent',
+              border: isActive ? '1px solid var(--border-focus)' : '1px solid transparent',
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
+            <UserIcon size={18} />
+            Profile
+          </NavLink>
         </nav>
       </div>
 
@@ -162,9 +180,15 @@ export const Sidebar: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--accent-primary)',
+                overflow: 'hidden',
+                border: '1px solid var(--border)',
               }}
             >
-              <UserIcon size={18} />
+              {user.photo_url ? (
+                <img src={user.photo_url} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
+              ) : (
+                <UserIcon size={18} />
+              )}
             </div>
             <div style={{ overflow: 'hidden' }}>
               <div

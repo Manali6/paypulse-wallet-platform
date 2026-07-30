@@ -23,11 +23,17 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class UserUpdate(BaseModel):
+    photo_url: str | None = Field(default=None, max_length=512)
+    default_currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
+
+
 class UserResponse(BaseModel):
     id: str
     email: str
     display_name: str
     default_currency: str
+    photo_url: str | None = None
     created_at: str
 
     model_config = {"from_attributes": True}

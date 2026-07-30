@@ -6,6 +6,7 @@ interface User {
   email: string;
   display_name: string;
   default_currency: string;
+  photo_url?: string | null;
   created_at: string;
 }
 
@@ -19,6 +20,7 @@ interface AuthState {
   logout: () => void;
   fetchUser: () => Promise<void>;
   checkAuth: () => void;
+  updateProfile: (data: { default_currency?: string; photo_url?: string }) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -85,6 +87,19 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   checkAuth: () => {
     const token = localStorage.getItem('access_token');
-    set({ isAuthenticated: !!token });
+    if (!token) {
+      set({ isAuthenticated: false, user: null });
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isLoading: true });
+    try {
+      const response = await api.put('/auth/profile', data);
+      set({ user: response.data, isLoading: false });
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
   },
 }));
