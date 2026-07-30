@@ -1,4 +1,4 @@
-# 🏗️ System Architecture — PayPulse Wallet Platform
+# System Architecture — PayPulse Wallet Platform
 
 The platform is designed around a micro-monolithic architectural pattern. It features a clean separation of concerns, ensuring high maintainability and straightforward horizontal scaling as the platform grows.
 
@@ -29,7 +29,7 @@ graph TD
 
 ---
 
-## 🧩 Core Domain Model
+## Core Domain Model
 
 | Domain Entity | Description | Key Attributes |
 |---------------|-------------|----------------|
@@ -40,7 +40,7 @@ graph TD
 
 ---
 
-## 🛡️ Key Design & Security Decisions
+## Key Design & Security Decisions
 
 1. **Precision Mathematics:** All financial balances utilize PostgreSQL `Numeric(18,6)` and Python's `Decimal` types. This strictly eliminates floating-point rounding errors native to standard float types.
 2. **Stateless JWT Auth:** The application uses stateless JWTs (HS256) for access (15m expiry) and refresh (7d expiry) tokens, alongside `Argon2` for secure password hashing.
@@ -49,7 +49,7 @@ graph TD
 
 ---
 
-# 🚀 Scale Exercise — Design Note
+# Scale Exercise — Design Note
 
 > **Scenario Assumptions:** 500,000 registered users, 20,000 Daily Active Users (DAU), ~100 Transactions Per Second (TPS) peak throughput.
 

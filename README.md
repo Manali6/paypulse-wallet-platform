@@ -1,23 +1,23 @@
-# 🚀 PayPulse — Multi-Currency Wallet Platform
+# PayPulse — Multi-Currency Wallet Platform
 
 PayPulse is a production-minded, high-performance multi-currency wallet application. It is engineered with a **FastAPI** backend and a modern **React (Vite + TypeScript)** frontend, containerised via Docker Compose, and configured with enterprise-grade observability using Prometheus and Grafana.
 
 ---
 
-## 🎯 Core Features (MVP)
+## Core Features (MVP)
 
 | Feature | Description | Technical Implementation |
 |---------|-------------|--------------------------|
-| **🔒 Authentication** | Secure user onboarding and login. | Stateless JWT access & refresh rotation; Argon2 password hashing. |
-| **💼 Wallet Management** | Multi-currency wallet generation. | Support for ISO currencies (USD, EUR, GBP, JPY, etc.) with unique constraints. |
-| **💸 Balance Operations** | Credit and debit funds safely. | Precision validation using PostgreSQL `Numeric(18,6)` to prevent floating point errors. |
-| **🧾 Transaction Ledger** | Immutable audit trail of activities. | ACID-compliant transaction snapshots (`balance_after`). |
-| **📈 Observability** | Real-time monitoring and alerting. | Prometheus metric instrumentation, 4xx/5xx tracking, and Grafana dashboards. |
-| **🛠️ DevOps & CI/CD** | Automated testing and deployment. | Docker Compose environment and GitHub Actions pipeline. |
+| **Authentication** | Secure user onboarding and login. | Stateless JWT access & refresh rotation; Argon2 password hashing. |
+| **Wallet Management** | Multi-currency wallet generation. | Support for ISO currencies (USD, EUR, GBP, JPY, etc.) with unique constraints. |
+| **Balance Operations** | Credit and debit funds safely. | Precision validation using PostgreSQL `Numeric(18,6)` to prevent floating point errors. |
+| **Transaction Ledger** | Immutable audit trail of activities. | ACID-compliant transaction snapshots (`balance_after`). |
+| **Observability** | Real-time monitoring and alerting. | Prometheus metric instrumentation, 4xx/5xx tracking, and Grafana dashboards. |
+| **DevOps & CI/CD** | Automated testing and deployment. | Docker Compose environment and GitHub Actions pipeline. |
 
 ---
 
-## 🏗️ Technology Stack
+## Technology Stack
 
 Our stack was carefully selected to prioritize developer velocity, scalability, and type safety:
 
@@ -28,7 +28,7 @@ Our stack was carefully selected to prioritize developer velocity, scalability, 
 
 ---
 
-## ⚙️ Local Setup & Development
+## Local Setup & Development
 
 ### Prerequisites
 - **Docker & Docker Compose**
@@ -54,14 +54,14 @@ Our stack was carefully selected to prioritize developer velocity, scalability, 
    ```
 
 4. **Access the services:**
-   - 🌐 **Frontend App:** [http://localhost:3000](http://localhost:3000)
-   - 📖 **Backend API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
-   - 📊 **Prometheus:** [http://localhost:9090](http://localhost:9090)
-   - 📈 **Grafana:** [http://localhost:3001](http://localhost:3001) *(Credentials: `admin` / `admin`)*
+   - **Frontend App:** [http://localhost:3000](http://localhost:3000)
+   - **Backend API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+   - **Prometheus:** [http://localhost:9090](http://localhost:9090)
+   - **Grafana:** [http://localhost:3001](http://localhost:3001) *(Credentials: `admin` / `admin`)*
 
 ---
 
-## 📡 API Endpoints Overview
+## API Endpoints Overview
 
 | Method | Endpoint | Purpose |
 |--------|----------|---------|
@@ -79,7 +79,7 @@ Our stack was carefully selected to prioritize developer velocity, scalability, 
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The repository contains rigorous test coverage for both the frontend and backend.
 
@@ -97,18 +97,18 @@ pytest tests/ -v --cov=app
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 The application utilizes continuous deployment pipelines triggered by GitHub Actions on merges to the `main` branch.
 
-- **Backend API & PostgreSQL & Redis:** [Railway](https://railway.app/)
-- **Frontend App:** [Vercel](https://vercel.com/)
+- **Backend API & PostgreSQL & Redis:** Deployed on Railway at [https://paypulse-api.up.railway.app](https://paypulse-api.up.railway.app)
+- **Frontend App:** Deployed on Vercel at [https://paypulse-wallet.vercel.app](https://paypulse-wallet.vercel.app)
 
 *(Refer to `.github/workflows` for the exact CI/CD pipeline definitions.)*
 
 ---
 
-## 💡 Architecture & Design Decisions
+## Architecture & Design Decisions
 
 - Please review **[ARCHITECTURE.md](./ARCHITECTURE.md)** for detailed sequence diagrams, domain models, and our **Scale Exercise** design notes (handling 500k users / 100 TPS).
 - Please review **[AI_USAGE.md](./AI_USAGE.md)** for transparency on how AI was utilized to accelerate the delivery of this platform.
