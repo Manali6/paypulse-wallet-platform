@@ -32,8 +32,8 @@ The application utilizes continuous deployment pipelines triggered by GitHub Act
 
 Our stack was carefully selected to prioritize developer velocity, scalability, and type safety.
 
-- **Minimal Backend:** FastAPI, PostgreSQL, Redis
-- **Minimal Frontend:** React, Vite, Zustand
+- **Backend:** FastAPI, PostgreSQL, Redis
+- **Frontend:** React, Vite
 - **Infrastructure & Observability:** Docker Compose, Prometheus, Grafana
 - **Deployment & CI/CD:** Railway (Backend), Vercel (Frontend), GitHub Actions
 

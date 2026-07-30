@@ -158,7 +158,9 @@ export const Sidebar: React.FC = () => {
               {user.photo_url ? (
                 <img src={getAssetUrl(user.photo_url)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
               ) : (
-                <UserIcon size={18} />
+                <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>
+                  {user?.display_name?.charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
             <div style={{ overflow: 'hidden' }}>
