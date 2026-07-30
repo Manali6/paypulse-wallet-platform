@@ -133,15 +133,21 @@ jobs:
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
       - name: Deploy to Railway
-        if: steps.check-token.outputs.skip == 'false'
         continue-on-error: true
         env:
+          RAILWAY_DEPLOY_HOOK: ${{ secrets.RAILWAY_DEPLOY_HOOK }}
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          rm -rf ~/.railway
-          export RAILWAY_TOKEN=$(echo "${{ secrets.RAILWAY_TOKEN }}" | tr -d '\r\n ')
-          cd backend
-          npx @railway/cli@latest deploy || echo "Railway deployment completed or skipped"
+          if [ -n "$RAILWAY_DEPLOY_HOOK" ]; then
+            echo "Triggering Railway deployment via webhook..."
+            curl -s -X POST "$RAILWAY_DEPLOY_HOOK"
+          elif [ -n "$RAILWAY_TOKEN" ]; then
+            rm -rf ~/.railway
+            export RAILWAY_TOKEN=$(echo "$RAILWAY_TOKEN" | tr -d '\r\n ')
+            cd backend && npx @railway/cli@latest deploy || echo "Railway CLI deploy completed or skipped"
+          else
+            echo "Neither RAILWAY_DEPLOY_HOOK nor RAILWAY_TOKEN set. Railway auto-deploys on git push if repo is linked."
+          fi
 
   deploy-frontend:
     name: Deploy Frontend (Vercel)
