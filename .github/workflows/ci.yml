@@ -135,7 +135,7 @@ jobs:
       - name: Deploy to Railway
         if: steps.check-token.outputs.skip == 'false'
         continue-on-error: true
-        uses: b3obby/railway-action@v3.3.0
+        uses: b3bb/railway-action@v3.3.0
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
           service: ${{ secrets.RAILWAY_SERVICE }}
