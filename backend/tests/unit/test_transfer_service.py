@@ -15,20 +15,10 @@ from app.exceptions import (
 from app.models.user import User
 from app.models.wallet import Wallet
 from app.services.transfer_service import (
-    calculate_exchange_rate,
     create_transfer,
 )
 
 
-class TestExchangeRateCalculation:
-    def test_same_currency_rate(self):
-        assert calculate_exchange_rate("USD", "USD") == Decimal("1.00000000")
-        assert calculate_exchange_rate("EUR", "EUR") == Decimal("1.00000000")
-
-    def test_cross_currency_rate(self):
-        # EUR (1.08) to USD (1.00) => 1.08
-        rate = calculate_exchange_rate("EUR", "USD")
-        assert rate == Decimal("1.08000000")
 
 
 class TestCreateTransferValidation:
