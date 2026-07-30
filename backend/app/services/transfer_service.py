@@ -104,8 +104,8 @@ def create_transfer(
 
     # 7. Calculate Received Amount
     exchange_rate = get_exchange_rate(
-        from_currency=sender_wallet.currency,
-        to_currency=receiver_wallet.currency,
+        from_curr=sender_wallet.currency,
+        to_curr=receiver_wallet.currency,
     )
     received_amount = (sent_amount * exchange_rate).quantize(Decimal("0.000001"))
 

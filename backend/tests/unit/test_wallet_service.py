@@ -65,6 +65,7 @@ class TestCreditWallet:
     def test_credit_wallet_not_found(self, mock_db):
         # Wallet query returns None
         mock_db.query.return_value.filter.return_value.first.return_value = None
+        mock_db.query.return_value.filter.return_value.with_for_update.return_value.first.return_value = None
         with pytest.raises(WalletNotFoundError):
             credit_wallet(mock_db, uuid4(), uuid4(), Decimal(100))
 
@@ -76,6 +77,7 @@ class TestCreditWallet:
         wallet.is_active = True
 
         mock_db.query.return_value.filter.return_value.first.return_value = wallet
+        mock_db.query.return_value.filter.return_value.with_for_update.return_value.first.return_value = wallet
 
         def refresh_side_effect(obj):
             if isinstance(obj, Transaction):
@@ -103,6 +105,7 @@ class TestDebitWallet:
         wallet.is_active = True
 
         mock_db.query.return_value.filter.return_value.first.return_value = wallet
+        mock_db.query.return_value.filter.return_value.with_for_update.return_value.first.return_value = wallet
 
         with pytest.raises(InsufficientFundsError):
             debit_wallet(mock_db, wallet.id, uuid4(), Decimal(100))
@@ -115,6 +118,7 @@ class TestDebitWallet:
         wallet.is_active = True
 
         mock_db.query.return_value.filter.return_value.first.return_value = wallet
+        mock_db.query.return_value.filter.return_value.with_for_update.return_value.first.return_value = wallet
 
         def refresh_side_effect(obj):
             if isinstance(obj, Transaction):
@@ -130,5 +134,6 @@ class TestDebitWallet:
 
     def test_debit_wallet_not_found(self, mock_db):
         mock_db.query.return_value.filter.return_value.first.return_value = None
+        mock_db.query.return_value.filter.return_value.with_for_update.return_value.first.return_value = None
         with pytest.raises(WalletNotFoundError):
             debit_wallet(mock_db, uuid4(), uuid4(), Decimal(50))
