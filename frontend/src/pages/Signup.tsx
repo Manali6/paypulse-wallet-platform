@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import toast from 'react-hot-toast';
 import { handleApiError } from '../lib/api';
+import { Alert } from '../components/ui/Alert';
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD'];
 
 export const Signup: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -18,10 +21,12 @@ export const Signup: React.FC = () => {
     e.preventDefault();
     try {
       await signup(email, password, displayName, defaultCurrency);
-      toast.success('Account created successfully!');
+      setSuccessMsg('Account created successfully!');
+      setErrorMsg(null);
       navigate('/');
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Signup failed'));
+      setErrorMsg(handleApiError(err, 'Signup failed'));
+      setSuccessMsg(null);
     }
   };
 
@@ -44,6 +49,8 @@ export const Signup: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
           <div className="input-group">
             <label htmlFor="displayName">Full Name</label>
             <input

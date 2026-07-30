@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useWalletStore } from '../store/walletStore';
 import { formatCurrency, formatDate } from '../lib/formatters';
 import { RefreshCw, ArrowRightLeft, CheckCircle2, TrendingUp } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { handleApiError } from '../lib/api';
+import { Alert } from '../components/ui/Alert';
 
 const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'SGD'];
 
 export const Exchange: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const { wallets, rates, conversions, fetchWallets, fetchRates, fetchConversions, convertCurrency } =
     useWalletStore();
 
@@ -32,17 +35,20 @@ export const Exchange: React.FC = () => {
     e.preventDefault();
 
     if (fromCurrency === toCurrency) {
-      toast.error('Source and target currencies must be different');
+      setErrorMsg('Source and target currencies must be different');
+      setSuccessMsg(null);
       return;
     }
 
     if (!amount || parseFloat(amount) <= 0) {
-      toast.error('Please enter a positive amount to convert');
+      setErrorMsg('Please enter a positive amount to convert');
+      setSuccessMsg(null);
       return;
     }
 
     if (!sourceWallet || parseFloat(sourceWallet.balance) < parseFloat(amount)) {
-      toast.error(`Insufficient ${fromCurrency} balance`);
+      setErrorMsg(`Insufficient ${fromCurrency} balance`);
+      setSuccessMsg(null);
       return;
     }
 
@@ -57,15 +63,12 @@ export const Exchange: React.FC = () => {
         idempotency_key: idempotencyKey,
       });
 
-      toast.success(
-        `Converted ${formatCurrency(record.from_amount, record.from_currency)} to ${formatCurrency(
-          record.to_amount,
-          record.to_currency
-        )}!`
-      );
+      setSuccessMsg(`Successfully exchanged ${formatCurrency(record.from_amount, record.from_currency)} to ${formatCurrency(record.to_amount, record.to_currency)}`);
+      setErrorMsg(null);
       setAmount('');
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Conversion failed'));
+      setErrorMsg(handleApiError(err, 'Conversion failed'));
+      setSuccessMsg(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -102,6 +105,8 @@ export const Exchange: React.FC = () => {
           </div>
 
           <form onSubmit={handleConvertSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
             {/* From / To Currencies Row with Swap Button */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', alignItems: 'flex-end' }}>
               <div className="input-group">

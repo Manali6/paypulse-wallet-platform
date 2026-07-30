@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { getAssetUrl, handleApiError } from '../lib/api';
-import toast from 'react-hot-toast';
 import { Camera, Save, Settings, User } from 'lucide-react';
+import { Alert } from '../components/ui/Alert';
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD'];
 
 export const Profile: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const { user, updateProfile, uploadPhoto, isLoading } = useAuthStore();
   const [photoUrl, setPhotoUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -31,9 +34,11 @@ export const Profile: React.FC = () => {
           default_currency: defaultCurrency,
         });
       }
-      toast.success('Profile updated successfully!');
+      setSuccessMsg('Profile updated successfully!');
+      setErrorMsg(null);
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Failed to update profile'));
+      setErrorMsg(handleApiError(err, 'Failed to update profile'));
+      setSuccessMsg(null);
     }
   };
 
@@ -136,6 +141,8 @@ export const Profile: React.FC = () => {
           </div>
           
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
             <div className="input-group" style={{ marginBottom: '24px', flex: 1 }}>
               <label htmlFor="defaultCurrency">Default Currency</label>
               <select

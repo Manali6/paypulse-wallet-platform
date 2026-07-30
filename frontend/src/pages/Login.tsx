@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import toast from 'react-hot-toast';
 import { handleApiError } from '../lib/api';
+import { Alert } from '../components/ui/Alert';
 
 export const Login: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading } = useAuthStore();
@@ -14,10 +17,12 @@ export const Login: React.FC = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      toast.success('Logged in successfully!');
+      setSuccessMsg('Logged in successfully!');
+      setErrorMsg(null);
       navigate('/');
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Failed to login'));
+      setErrorMsg(handleApiError(err, 'Failed to login'));
+      setSuccessMsg(null);
     }
   };
 
@@ -40,6 +45,8 @@ export const Login: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
           <div className="input-group">
             <label htmlFor="email">Email Address</label>
             <input

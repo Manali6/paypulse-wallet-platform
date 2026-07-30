@@ -3,10 +3,13 @@ import { useWalletStore, type UserSearchResult } from '../store/walletStore';
 import { formatCurrency, formatDate } from '../lib/formatters';
 import { Send, Search, CheckCircle2, ArrowRight } from 'lucide-react';
 import api from '../lib/api';
-import toast from 'react-hot-toast';
 import { handleApiError } from '../lib/api';
+import { Alert } from '../components/ui/Alert';
 
 export const Transfers: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const { wallets, transfers, fetchWallets, fetchTransfers, initiateTransfer } = useWalletStore();
 
   // Form State
@@ -55,7 +58,8 @@ export const Transfers: React.FC = () => {
     e.preventDefault();
 
     if (!recipientEmail || !amount || parseFloat(amount) <= 0) {
-      toast.error('Please enter a valid recipient and positive amount');
+      setErrorMsg('Please enter a valid recipient and positive amount');
+      setSuccessMsg(null);
       return;
     }
 
@@ -72,14 +76,14 @@ export const Transfers: React.FC = () => {
         description,
       });
 
-      toast.success(
-        `Transferred ${formatCurrency(transfer.sent_amount, transfer.source_currency)} to ${recipientEmail}!`
-      );
+      setSuccessMsg(`Transferred ${formatCurrency(transfer.sent_amount, transfer.source_currency)} to ${recipientEmail}!`);
+      setErrorMsg(null);
       setRecipientEmail('');
       setAmount('');
       setDescription('');
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Transfer failed'));
+      setErrorMsg(handleApiError(err, 'Transfer failed'));
+      setSuccessMsg(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -103,6 +107,8 @@ export const Transfers: React.FC = () => {
           </h2>
 
           <form onSubmit={handleTransferSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
             {/* Recipient Email with Search Dropdown */}
             <div className="input-group" style={{ position: 'relative' }}>
               <label>Recipient Email</label>

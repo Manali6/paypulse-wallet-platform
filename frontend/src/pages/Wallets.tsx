@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useWalletStore, type Wallet } from '../store/walletStore';
 import { formatCurrency } from '../lib/formatters';
 import { Plus, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { handleApiError } from '../lib/api';
+import { Alert } from '../components/ui/Alert';
 
 const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'SGD'];
 
 export const Wallets: React.FC = () => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const { wallets, fetchWallets, createWallet, creditWallet, debitWallet } = useWalletStore();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [actionModal, setActionModal] = useState<{ type: 'credit' | 'debit'; wallet: Wallet } | null>(null);
@@ -34,10 +37,12 @@ export const Wallets: React.FC = () => {
     setIsSubmitting(true);
     try {
       await createWallet(newCurrency);
-      toast.success(`${newCurrency} Wallet created!`);
+      setSuccessMsg(`${newCurrency} Wallet created!`);
+      setErrorMsg(null);
       setIsAddModalOpen(false);
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Failed to create wallet'));
+      setErrorMsg(handleApiError(err, 'Failed to create wallet'));
+      setSuccessMsg(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -51,16 +56,19 @@ export const Wallets: React.FC = () => {
     try {
       if (actionModal.type === 'credit') {
         await creditWallet(actionModal.wallet.id, amount, description);
-        toast.success(`Credited ${formatCurrency(amount, actionModal.wallet.currency)}`);
+        setSuccessMsg(`Credited ${formatCurrency(amount, actionModal.wallet.currency)}`);
+      setErrorMsg(null);
       } else {
         await debitWallet(actionModal.wallet.id, amount, description);
-        toast.success(`Debited ${formatCurrency(amount, actionModal.wallet.currency)}`);
+        setSuccessMsg(`Debited ${formatCurrency(amount, actionModal.wallet.currency)}`);
+      setErrorMsg(null);
       }
       setActionModal(null);
       setAmount('');
       setDescription('');
     } catch (err: any) {
-      toast.error(handleApiError(err, 'Transaction failed'));
+      setErrorMsg(handleApiError(err, 'Transaction failed'));
+      setSuccessMsg(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -127,6 +135,8 @@ export const Wallets: React.FC = () => {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2>Create New Wallet</h2>
             <form onSubmit={handleCreateWallet}>
+          {errorMsg && <Alert type="error" message={errorMsg} onClose={() => setErrorMsg(null)} />}
+          {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg(null)} />}
               <div className="input-group" style={{ marginBottom: '20px' }}>
                 <label>Select Currency</label>
                 <select
