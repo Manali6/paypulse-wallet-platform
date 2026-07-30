@@ -22,6 +22,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from app.services.fx_service import start_fx_scheduler, stop_fx_scheduler
+
     start_fx_scheduler()
     yield
     stop_fx_scheduler()

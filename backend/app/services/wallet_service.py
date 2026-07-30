@@ -54,7 +54,9 @@ def get_user_wallets(db: Session, user_id: UUID) -> list[Wallet]:
     )
 
 
-def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID, for_update: bool = False) -> Wallet:
+def get_wallet_by_id(
+    db: Session, wallet_id: UUID, user_id: UUID, for_update: bool = False
+) -> Wallet:
     """Get a specific wallet, ensuring it belongs to the user."""
     query = db.query(Wallet).filter(
         Wallet.id == wallet_id,
@@ -63,7 +65,7 @@ def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID, for_update: bo
     )
     if for_update:
         query = query.with_for_update()
-    
+
     wallet = query.first()
     if not wallet:
         raise WalletNotFoundError(str(wallet_id))

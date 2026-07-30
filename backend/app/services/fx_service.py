@@ -120,9 +120,11 @@ def refresh_exchange_rates_job():
 scheduler = BackgroundScheduler()
 scheduler.add_job(refresh_exchange_rates_job, "interval", hours=1, id="fx_refresh_job")
 
+
 def start_fx_scheduler():
     if not scheduler.running:
         scheduler.start()
+
 
 def stop_fx_scheduler():
     if scheduler.running:
