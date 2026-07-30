@@ -27,6 +27,19 @@ def create_app() -> FastAPI:
     application.state.limiter = limiter
     application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+    @application.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Internal Server Error: {exc!s}"},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": "true",
+            },
+        )
+
     # ── CORS Middleware (Outermost middleware) ──
     application.add_middleware(
         CORSMiddleware,
