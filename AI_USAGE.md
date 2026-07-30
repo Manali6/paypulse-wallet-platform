@@ -12,6 +12,7 @@ This document details how Artificial Intelligence was intelligently leveraged to
 | **Claude 3.5 Sonnet** | Architecture design brainstorming, domain modeling, API contract definitions, and scaling strategies. |
 | **Gemini 1.5 Pro** | Deep refactoring discussions, debugging complex asynchronous React state bugs, and identifying optimal index strategies for PostgreSQL. |
 | **GitHub Copilot** | Inline code completion for repetitive tasks, such as generating the initial SQLAlchemy model fields, parsing environment variables, and writing standard Vitest assertions. |
+| **MCP Tools (Model Context Protocol)** | Reading and analyzing HAR (HTTP Archive) files to perfectly debug API network bottlenecks and orchestrating browser subagents for automated UI testing. |
 
 ---
 
@@ -28,12 +29,16 @@ AI was instrumental in eliminating boilerplate overhead, acting as a massive acc
    - Assisted in the rapid translation of domain models into SQLAlchemy 2.0 declarative classes, mapping exact data types like `Numeric(18,6)` to Python `Decimal`.
    - Scaffolded the initial Alembic migration environment (`env.py`) and generated the baseline migration scripts, handling the initial foreign key bindings perfectly.
 
-3. **Frontend UI Components & Zustand State:** 
+3. **Advanced Debugging & Network Analysis (MCP Tools):**
+   - Utilized MCP tools to directly read and parse `.har` (HTTP Archive) files exported from Chrome DevTools.
+   - This allowed the AI to autonomously analyze API network payloads, exact latency timings, and hidden HTTP headers to rapidly identify CORS bottlenecks and JSON deserialization errors without manual human copy-pasting.
+
+4. **Frontend UI Components & Zustand State:** 
    - Automated the repetitive generation of JSX layouts using custom CSS design tokens.
    - Instantly generated the structural skeleton for the glassmorphism theme and provided a robust starting point for responsive sidebar navigation.
    - Assisted in writing the initial boilerplate for the Zustand stores (`authStore.ts` and `walletStore.ts`), cutting down time spent on generic state management logic.
 
-4. **Test Suite Generation & Mocking:** 
+5. **Test Suite Generation & Mocking:** 
    - Quickly produced comprehensive unit test coverage for complex logic like `auth_service` and `wallet_service`, allowing the engineer to focus on the edge cases.
    - Scaffolded integration testing fixtures using Pytest, setting up the mocked database sessions and test user factories.
    - Generated the Vite and jsdom environment configuration to get React component tests running seamlessly within minutes.
