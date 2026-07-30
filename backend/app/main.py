@@ -27,14 +27,10 @@ def create_app() -> FastAPI:
     application.state.limiter = limiter
     application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-    # ── CORS (Must be added FIRST so it is outermost for all responses including errors) ──
-    cors_origins = settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS else ["*"]
+    # ── CORS Middleware (Outermost middleware) ──
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=cors_origins if cors_origins != ["*"] else [],
-        allow_origin_regex=r"https?://.*"
-        if cors_origins == ["*"] or "*" in cors_origins
-        else None,
+        allow_origin_regex=r"https?://.*",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
