@@ -8,9 +8,11 @@ This document details how Artificial Intelligence was intelligently leveraged to
 
 | AI Tool | Primary Use Cases |
 |---------|-------------------|
-| **Antigravity AI IDE** | End-to-end pair programming, scaffolding the repository, debugging Docker container path issues, refactoring FastAPI backend routes, and fixing frontend React bugs. |
-| **Gemini (via Antigravity)** | Brainstorming the financial domain model, debugging race conditions with pessimistic locking, and rewriting complex CSS for the premium glassmorphism UI. |
-| **MCP Tools** | Reading `.har` files to diagnose API network bottlenecks, automatically searching files (`grep_search`), running local bash commands (`run_command`) to execute test suites, and viewing file contents to resolve code review feedback. |
+| **Antigravity AI Agent** | Automated scaffold generation, test suite writing, and infrastructure setup (Docker/CI). |
+| **Claude 3.5 Sonnet** | Architecture design brainstorming, domain modeling, API contract definitions, and scaling strategies. |
+| **Gemini 1.5 Pro** | Deep refactoring discussions, debugging complex asynchronous React state bugs, and PostgreSQL indexing. |
+| **GitHub Copilot** | Inline code completion for repetitive tasks, generating SQLAlchemy models, parsing env vars, and Vitest assertions. |
+| **MCP Tools** | Reading HAR files to debug API network bottlenecks and orchestrating browser subagents for automated UI testing. |
 
 ---
 
