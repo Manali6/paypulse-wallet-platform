@@ -37,7 +37,14 @@ export const Login: React.FC = () => {
         padding: '20px',
       }}
     >
-      <div className="glass-card" style={{ width: '100%', maxWidth: '400px', padding: '32px' }}>
+      {/* Floating Background */}
+      <div className="floating-bg-container">
+        <div className="floating-orb cyan"></div>
+        <div className="floating-orb purple"></div>
+        <div className="floating-orb blue"></div>
+      </div>
+
+      <div className="glass-card" style={{ width: '100%', maxWidth: '400px', padding: '32px', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
             <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(6, 182, 212, 0.4)' }}>

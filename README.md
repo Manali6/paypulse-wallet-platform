@@ -101,8 +101,8 @@ pytest tests/ -v --cov=app
 
 The application utilizes continuous deployment pipelines triggered by GitHub Actions on merges to the `main` branch.
 
-- **Backend API & PostgreSQL & Redis:** Deployed on Railway at [https://paypulse-api.up.railway.app](https://paypulse-api.up.railway.app)
-- **Frontend App:** Deployed on Vercel at [https://paypulse-wallet.vercel.app](https://paypulse-wallet.vercel.app)
+- **Backend API & PostgreSQL & Redis:** Deployed on Railway at [https://paypulse-wallet-platform-production.up.railway.app/health](https://paypulse-wallet-platform-production.up.railway.app/health)
+- **Frontend App:** Deployed on Vercel at [https://paypulse-wallet-platform.vercel.app/](https://paypulse-wallet-platform.vercel.app/)
 
 *(Refer to `.github/workflows` for the exact CI/CD pipeline definitions.)*
 

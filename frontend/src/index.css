@@ -378,3 +378,73 @@ select.input {
 .hover-pulse-glow:hover {
   animation: pulse-glow 2s infinite;
 }
+
+/* Floating Auth Background */
+.floating-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  background: var(--bg-primary);
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+.floating-orb.cyan {
+  background: rgba(6, 182, 212, 0.4);
+  width: 40vw;
+  height: 40vw;
+  min-width: 300px;
+  min-height: 300px;
+  top: -10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.floating-orb.purple {
+  background: rgba(99, 102, 241, 0.3);
+  width: 50vw;
+  height: 50vw;
+  min-width: 400px;
+  min-height: 400px;
+  bottom: -20%;
+  right: -10%;
+  animation-duration: 25s;
+  animation-delay: -5s;
+}
+
+.floating-orb.blue {
+  background: rgba(59, 130, 246, 0.25);
+  width: 30vw;
+  height: 30vw;
+  min-width: 250px;
+  min-height: 250px;
+  top: 40%;
+  left: 60%;
+  animation-duration: 18s;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(40px, 40px) scale(1.05);
+  }
+}
