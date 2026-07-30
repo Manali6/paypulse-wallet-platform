@@ -188,18 +188,18 @@ async def upload_profile_photo(
     ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
     filename = f"{current_user.id}.{ext}"
     file_path = f"uploads/avatars/{filename}"
-    
+
     # Read the file contents
     contents = await file.read()
-    
+
     # Write to local file
     with open(file_path, "wb") as f:  # noqa: ASYNC230
         f.write(contents)
-        
+
     # Construct relative URL so frontend can prepend the backend URL
     photo_url = f"/uploads/avatars/{filename}"
     current_user.photo_url = photo_url
-    
+
     db.commit()
     db.refresh(current_user)
 
