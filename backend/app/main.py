@@ -2,6 +2,8 @@
 
 import os
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,6 +19,14 @@ from app.routers import auth, fx, health, transactions, transfers, users, wallet
 settings = get_settings()
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from app.services.fx_service import start_fx_scheduler, stop_fx_scheduler
+    start_fx_scheduler()
+    yield
+    stop_fx_scheduler()
+
+
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
@@ -25,6 +35,7 @@ def create_app() -> FastAPI:
         version=settings.APP_VERSION,
         docs_url="/docs",
         redoc_url="/redoc",
+        lifespan=lifespan,
     )
 
     # Ensure uploads directory exists
@@ -40,7 +51,7 @@ def create_app() -> FastAPI:
 
         return JSONResponse(
             status_code=500,
-            content={"detail": f"Internal Server Error: {exc!s}"},
+            content={"detail": "Internal Server Error"},
             headers={
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Credentials": "true",
@@ -50,7 +61,7 @@ def create_app() -> FastAPI:
     # ── CORS Middleware (Outermost middleware) ──
     application.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=r"https?://.*",
+        allow_origins=settings.cors_origins_list,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

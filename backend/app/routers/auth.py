@@ -158,6 +158,9 @@ def update_profile(
     if request.photo_url is not None:
         current_user.photo_url = request.photo_url
 
+    if request.display_name is not None:
+        current_user.display_name = request.display_name
+
     db.commit()
     db.refresh(current_user)
 

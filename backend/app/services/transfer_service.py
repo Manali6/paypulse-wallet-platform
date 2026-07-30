@@ -15,35 +15,7 @@ from app.models.transaction import Transaction, TransactionType
 from app.models.transfer import Transfer, TransferStatus
 from app.models.user import User
 from app.models.wallet import Wallet
-
-# Base conversion rates relative to USD for Flow 2 cross-currency transfers
-BASE_RATES_TO_USD: dict[str, Decimal] = {
-    "USD": Decimal("1.0"),
-    "EUR": Decimal("1.08"),
-    "GBP": Decimal("1.27"),
-    "JPY": Decimal("0.0065"),
-    "INR": Decimal("0.012"),
-    "CAD": Decimal("0.73"),
-    "AUD": Decimal("0.65"),
-    "CHF": Decimal("1.12"),
-    "CNY": Decimal("0.14"),
-    "SGD": Decimal("0.74"),
-}
-
-
-def calculate_exchange_rate(from_curr: str, to_curr: str) -> Decimal:
-    """Calculate cross rate between two currencies based on USD standard rates."""
-    from_curr = from_curr.upper()
-    to_curr = to_curr.upper()
-
-    if from_curr == to_curr:
-        return Decimal("1.00000000")
-
-    rate_from = BASE_RATES_TO_USD.get(from_curr, Decimal("1.0"))
-    rate_to = BASE_RATES_TO_USD.get(to_curr, Decimal("1.0"))
-
-    # rate = rate_from / rate_to
-    return (rate_from / rate_to).quantize(Decimal("0.00000001"))
+from app.services.fx_service import get_exchange_rate
 
 
 def create_transfer(
@@ -131,8 +103,9 @@ def create_transfer(
         )
 
     # 7. Calculate Received Amount
-    exchange_rate = calculate_exchange_rate(
-        sender_wallet.currency, receiver_wallet.currency
+    exchange_rate = get_exchange_rate(
+        from_currency=sender_wallet.currency,
+        to_currency=receiver_wallet.currency,
     )
     received_amount = (sent_amount * exchange_rate).quantize(Decimal("0.000001"))
 

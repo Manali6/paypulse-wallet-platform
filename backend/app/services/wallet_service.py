@@ -54,17 +54,17 @@ def get_user_wallets(db: Session, user_id: UUID) -> list[Wallet]:
     )
 
 
-def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID) -> Wallet:
+def get_wallet_by_id(db: Session, wallet_id: UUID, user_id: UUID, for_update: bool = False) -> Wallet:
     """Get a specific wallet, ensuring it belongs to the user."""
-    wallet = (
-        db.query(Wallet)
-        .filter(
-            Wallet.id == wallet_id,
-            Wallet.user_id == user_id,
-            Wallet.is_active,
-        )
-        .first()
+    query = db.query(Wallet).filter(
+        Wallet.id == wallet_id,
+        Wallet.user_id == user_id,
+        Wallet.is_active,
     )
+    if for_update:
+        query = query.with_for_update()
+    
+    wallet = query.first()
     if not wallet:
         raise WalletNotFoundError(str(wallet_id))
     return wallet
@@ -78,7 +78,7 @@ def credit_wallet(
     description: str | None = None,
 ) -> Transaction:
     """Credit (add funds to) a wallet. Returns the created transaction."""
-    wallet = get_wallet_by_id(db, wallet_id, user_id)
+    wallet = get_wallet_by_id(db, wallet_id, user_id, for_update=True)
 
     wallet.balance += amount
     new_balance = wallet.balance
@@ -105,7 +105,7 @@ def debit_wallet(
     description: str | None = None,
 ) -> Transaction:
     """Debit (withdraw funds from) a wallet. Checks for sufficient balance."""
-    wallet = get_wallet_by_id(db, wallet_id, user_id)
+    wallet = get_wallet_by_id(db, wallet_id, user_id, for_update=True)
 
     if wallet.balance < amount:
         raise InsufficientFundsError(

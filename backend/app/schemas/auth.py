@@ -24,6 +24,7 @@ class TokenResponse(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    display_name: str | None = Field(default=None, max_length=100)
     photo_url: str | None = Field(default=None, max_length=512)
     default_currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
 
